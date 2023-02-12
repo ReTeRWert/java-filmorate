@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.ValidationException;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -37,7 +38,7 @@ public class FilmController {
             log.info("Обновление фильма: {}", films.put(film.getId(), film));
             return film;
         } else {
-            return null;
+            throw new ValidationException(String.format("%s is not registered", film));
         }
     }
 }

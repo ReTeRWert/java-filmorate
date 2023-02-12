@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.ValidationException;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -35,7 +36,7 @@ public class UserController {
             log.info("Обновление пользователя: {}", userHashMap.put(user.getId(), user));
             return user;
         } else {
-            return null;
+            throw new ValidationException(String.format("%s is not registered", user));
         }
     }
 }
