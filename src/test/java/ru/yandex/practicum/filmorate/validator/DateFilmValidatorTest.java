@@ -41,7 +41,7 @@ public class DateFilmValidatorTest {
 
     @DisplayName("Date check")
     @ParameterizedTest
-    @CsvSource({"1780-01-01, false, then before", "1985-12-27, false, then before", "1985-12-28, true, then equals", "2000-01-01, true, then after"
+    @CsvSource({"1780-01-01, false, then before", "1895-12-27, false, then before", "1895-12-28, true, then equals", "2000-01-01, true, then after"
     })
     void dateCheck(LocalDate testDate, boolean isCorrect, String message) {
         validatorDataFilm.initialize(dataFilmChecker);
