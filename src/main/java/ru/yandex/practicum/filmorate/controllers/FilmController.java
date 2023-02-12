@@ -33,7 +33,11 @@ public class FilmController {
 
     @PutMapping("/films")
     public Film updateFilm(@Validated @RequestBody Film film) {
-        log.info("Обновление фильма: {}", films.put(film.getId(), film));
-        return film;
+        if(films.containsKey(film.getId())){
+            log.info("Обновление фильма: {}", films.put(film.getId(), film));
+            return film;
+        } else {
+            return null;
+        }
     }
 }

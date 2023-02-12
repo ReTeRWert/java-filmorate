@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +31,11 @@ public class UserController {
 
     @PutMapping("/users")
     public User update(@RequestBody @Validated User user) {
-        log.info("Обновление пользователя: {}",userHashMap.put(user.getId(), user));
-        return user;
+        if (userHashMap.containsKey(user.getId())) {
+            log.info("Обновление пользователя: {}", userHashMap.put(user.getId(), user));
+            return user;
+        } else {
+            return null;
+        }
     }
 }
