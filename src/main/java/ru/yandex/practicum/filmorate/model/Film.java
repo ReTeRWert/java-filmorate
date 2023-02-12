@@ -1,9 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+
 import lombok.Builder;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -11,7 +8,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.filmorate.validator.DateFilm;
 
-
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Data

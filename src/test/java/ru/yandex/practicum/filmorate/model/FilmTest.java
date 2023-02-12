@@ -1,25 +1,23 @@
 package ru.yandex.practicum.filmorate.model;
 
-import jakarta.validation.*;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import ru.yandex.practicum.filmorate.validator.DateFilmValidator;
 
+import javax.validation.*;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class FilmTest {
-    
-    private Film film;
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
-
+    private Film film;
     @Mock
     private ConstraintValidatorContext constraintValidatorContext;
 
@@ -29,7 +27,7 @@ public class FilmTest {
                 .id(null)
                 .name("name")
                 .description("")
-                .releaseDate(LocalDate.of(1999,9,9))
+                .releaseDate(LocalDate.of(1999, 9, 9))
                 .duration(99L)
                 .build();
     }
@@ -37,24 +35,24 @@ public class FilmTest {
     @DisplayName("MaxSize description validation")
     @Test
     void checkDescriptionValidation() {
-        film.setDescription(Stream.generate(() ->("*")).limit(201).collect(Collectors.joining()));
+        film.setDescription(Stream.generate(() -> ("*")).limit(201).collect(Collectors.joining()));
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Assertions.assertEquals("Максимальная длина описания — 200 символов", violations.iterator().next().getMessage());
     }
 
     @DisplayName("NotBlank name validation")
     @Test
-    void checkNameIsNotBlank(){
+    void checkNameIsNotBlank() {
         film.setName("");
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
-        Assertions.assertEquals("Название не может быть пустым;",violations.iterator().next().getMessage());
+        Assertions.assertEquals("Название не может быть пустым;", violations.iterator().next().getMessage());
     }
 
     @DisplayName("Pozitive duration validation")
     @Test
-    void checkPositiveDurationValidation(){
+    void checkPositiveDurationValidation() {
         film.setDuration(-1L);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
-        Assertions.assertEquals("Продолжительность фильма должна быть положительной.",violations.iterator().next().getMessage());
+        Assertions.assertEquals("Продолжительность фильма должна быть положительной.", violations.iterator().next().getMessage());
     }
 }

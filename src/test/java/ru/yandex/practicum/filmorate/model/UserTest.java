@@ -1,10 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,14 +8,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.util.Set;
 
 public class UserTest {
-    private User user;
-
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
+    private User user;
 
     @BeforeEach
     void beforeEach() {
@@ -81,7 +80,7 @@ public class UserTest {
 
     @DisplayName("Blank name:login test")
     @Test
-    void checkBlankNameEqualsLogin(){
-        Assertions.assertEquals(user.getLogin(),user.getName(),"имя для отображения может быть пустым — в таком случае будет использован логин");
+    void checkBlankNameEqualsLogin() {
+        Assertions.assertEquals(user.getLogin(), user.getName(), "имя для отображения может быть пустым — в таком случае будет использован логин");
     }
 }

@@ -13,8 +13,8 @@ import java.util.HashMap;
 
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    private long lastId = 0;
     private final HashMap<Long, User> userHashMap = new HashMap();
+    private long lastId = 0;
 
     @GetMapping("/users")
     public Collection<User> getUserHashMap() {
@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PutMapping("/user")
-    public User update( @RequestBody @Validated User user) {
+    public User update(@RequestBody @Validated User user) {
         //user.setName(user.getName());
         log.info("Обновление пользователя");
         return userHashMap.put(user.getId(), user);

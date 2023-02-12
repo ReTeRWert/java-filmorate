@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.validator;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import java.util.Objects;
 
 public class LoginValidator implements ConstraintValidator<Login, String> {

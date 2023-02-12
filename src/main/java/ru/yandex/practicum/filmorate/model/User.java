@@ -1,10 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
 import ru.yandex.practicum.filmorate.validator.Login;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 
 @Data
