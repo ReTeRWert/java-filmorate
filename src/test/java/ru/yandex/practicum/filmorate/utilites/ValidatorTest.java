@@ -16,12 +16,12 @@ class ValidatorTest extends Validator {
 
     private Film createCorrectFilm() {
         return new Film(1, "film1", "desc",
-                LocalDate.of(2002, 5, 23), Duration.ofMinutes(120));
+                LocalDate.of(2002, 5, 23), 120);
     }
 
     private Film createIncorrectFilm() {
         return new Film(0, "", "", LocalDate.of(1855, 2, 12),
-                Duration.ofMinutes(-103));
+                -103);
     }
 
     private User createCorrectUser() {

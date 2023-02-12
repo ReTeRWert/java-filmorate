@@ -19,7 +19,8 @@ import java.util.List;
 public class UserController {
 
     private final HashMap<Integer, User> users = new HashMap<>();
-    Validator validator = new Validator();
+    private final Validator validator = new Validator();
+    private static int id = 1;
 
 
     @GetMapping("/users")
@@ -28,40 +29,37 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public User addUser(@RequestBody User user, HttpServletRequest request) {
-        try {
-            validator.validateUser(user);
-        } catch (ValidateException e) {
-            System.out.println(e.getMessage());
-        }
+    public User addUser(@RequestBody User user, HttpServletRequest request) throws ValidateException {
+
+        validator.validateUser(user);
 
         if (users.containsValue(user)) {
-            System.out.println("Такой пользователь уже есть.");
-            return null;
+            throw new ValidateException("Такой пользователь уже есть.");
         }
 
+        user.setId(id);
         users.put(user.getId(), user);
+        id++;
         log.info("Получен запрос к эндпоинту: '{} {}', Строка параметров запроса: '{}'",
                 request.getMethod(), request.getRequestURI(), request.getQueryString());
+
         return user;
     }
 
     @PutMapping("/users")
-    public User updateUser(@RequestBody User user, HttpServletRequest request) {
-        try {
-            validator.validateUser(user);
-        } catch (ValidateException e) {
-            System.out.println(e.getMessage());
-        }
+    public User updateUser(@RequestBody User user, HttpServletRequest request) throws ValidateException {
 
-        if (!users.containsValue(user)) {
-            System.out.println("Такого пользователя еще нет, добавьте его");
-            return null;
+        validator.validateUser(user);
+
+        if (!users.containsKey(user.getId())) {
+            throw new ValidateException("Такого пользователя еще нет, добавьте его");
         }
 
         users.replace(user.getId(), user);
         log.info("Получен запрос к эндпоинту: '{} {}', Строка параметров запроса: '{}'",
                 request.getMethod(), request.getRequestURI(), request.getQueryString());
+
+
         return user;
     }
 }
