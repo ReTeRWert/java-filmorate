@@ -11,7 +11,7 @@ public class DateFilmValidator implements ConstraintValidator<DateFilm, LocalDat
         if (value == null) {
             return false;
         } else {
-            return !value.isBefore(LocalDate.of(1985, 12, 28));
+            return !value.isBefore(LocalDate.of(1895, 12, 28));
         }
     }
 }
