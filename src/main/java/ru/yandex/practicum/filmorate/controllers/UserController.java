@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
@@ -10,7 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 
 @RestController
-
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final HashMap<Long, User> userHashMap = new HashMap();
@@ -22,18 +22,17 @@ public class UserController {
         return userHashMap.values();
     }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     public User create(@RequestBody @Validated User user) {
         user.setId(++lastId);
-        //user.setName(user.getName());
         log.info("Добавлен пользователь: {}", user);
-        return userHashMap.put(user.getId(), user);
+        userHashMap.put(user.getId(), user);
+        return user;
     }
 
-    @PutMapping("/user")
+    @PutMapping("/users")
     public User update(@RequestBody @Validated User user) {
-        //user.setName(user.getName());
-        log.info("Обновление пользователя");
-        return userHashMap.put(user.getId(), user);
+        log.info("Обновление пользователя: {}",userHashMap.put(user.getId(), user));
+        return user;
     }
 }

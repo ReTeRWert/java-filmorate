@@ -23,16 +23,17 @@ public class FilmController {
         return films.values();
     }
 
-    @PostMapping("/film")
+    @PostMapping("/films")
     public Film createFilm(@Validated @RequestBody Film film) {
         film.setId(++lastId);
         log.debug("Добавлен фильм: {}", film);
-        return films.put(film.getId(), film);
+        Film s = films.put(film.getId(), film);
+        return film;
     }
 
-    @PutMapping("/film")
+    @PutMapping("/films")
     public Film updateFilm(@Validated @RequestBody Film film) {
-        log.info("Обновление фильма");
-        return films.put(film.getId(), film);
+        log.info("Обновление фильма: {}", films.put(film.getId(), film));
+        return film;
     }
 }
