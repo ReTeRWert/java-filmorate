@@ -4,6 +4,7 @@ import lombok.Data;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Data
 public class Film {
@@ -19,5 +20,21 @@ public class Film {
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Film film = (Film) o;
+        return duration == film.duration &&
+                Objects.equals(name, film.name) &&
+                Objects.equals(description, film.description) &&
+                Objects.equals(releaseDate, film.releaseDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, description, releaseDate, duration);
     }
 }

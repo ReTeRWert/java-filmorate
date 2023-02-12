@@ -37,8 +37,7 @@ public class FilmController {
         validator.validateFilm(film);
 
         if (films.containsValue(film)) {
-            System.out.println("Такой фильм уже есть");
-            return null;
+            throw new ValidateException("Такой фильм уже есть");
         }
 
         film.setId(id);
