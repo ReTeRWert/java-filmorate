@@ -13,6 +13,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static ru.yandex.practicum.filmorate.model.Constants.MAX_LENGTH_DESCRIPTION_FILM;
+
 public class FilmTest {
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -35,9 +37,9 @@ public class FilmTest {
     @DisplayName("MaxSize description validation")
     @Test
     void checkDescriptionValidation() {
-        film.setDescription(Stream.generate(() -> ("*")).limit(201).collect(Collectors.joining()));
+        film.setDescription(Stream.generate(() -> ("*")).limit(MAX_LENGTH_DESCRIPTION_FILM+1).collect(Collectors.joining()));
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
-        Assertions.assertEquals("Максимальная длина описания — 200 символов", violations.iterator().next().getMessage());
+        Assertions.assertEquals("Максимальная длина описания — "+MAX_LENGTH_DESCRIPTION_FILM+" символов", violations.iterator().next().getMessage());
     }
 
     @DisplayName("NotBlank name validation")

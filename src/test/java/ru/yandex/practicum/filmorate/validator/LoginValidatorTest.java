@@ -51,7 +51,6 @@ class LoginValidatorTest {
     )
     void spaceValidation(String testName, boolean isCorrect) {
         loginValidator.initialize(login);
-
         Assertions.assertEquals(isCorrect
                 , loginValidator.isValid(testName, constraintValidatorContext));
     }

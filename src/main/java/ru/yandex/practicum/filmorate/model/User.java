@@ -1,10 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Setter;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
@@ -28,20 +25,15 @@ public class User {
     private String email;
     @Login
     private String login;
-    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     private String name;
     @PastOrPresent(message = "День рождения не может быть в будущем")
     private LocalDate birthday;
-
     public String getName() {
         if (name == null || name.isBlank()) {
             return login;
         } else {
             return name;
         }
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

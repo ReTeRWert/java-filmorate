@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-
 import lombok.Builder;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -14,20 +13,21 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
+import static ru.yandex.practicum.filmorate.model.Constants.MAX_LENGTH_DESCRIPTION_FILM;
+
 @Data
 @Builder
 @Validated
 public class Film {
     private final static Logger log = LoggerFactory.getLogger(Film.class);
-
     @PositiveOrZero(message = "Идентификатор не может быть отрицательным")
-    Long id;
+    private Long id;
     @NotBlank(message = "Название не может быть пустым;")
-    String name;
-    @Size(max = 200, message = "Максимальная длина описания — 200 символов")
-    String description;
+    private String name;
+    @Size(max = MAX_LENGTH_DESCRIPTION_FILM, message = "Максимальная длина описания — "+MAX_LENGTH_DESCRIPTION_FILM+" символов")
+    private String description;
     @DateFilm(message = "дата релиза — не раньше 28 декабря 1895 года")
-    LocalDate releaseDate;
+    private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительной.")
-    Long duration;
+    private Long duration;
 }
