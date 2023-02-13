@@ -32,11 +32,10 @@ public class UserController {
 
     @PutMapping("/users")
     public User update(@RequestBody @Validated User user) {
-        if (userHashMap.containsKey(user.getId())) {
-            log.info("Обновление пользователя: {}", userHashMap.put(user.getId(), user));
-            return user;
-        } else {
+        if (!userHashMap.containsKey(user.getId())) {
             throw new ValidationException(String.format("%s is not registered", user));
         }
+        log.info("Обновление пользователя: {}", userHashMap.put(user.getId(), user));
+        return user;
     }
 }

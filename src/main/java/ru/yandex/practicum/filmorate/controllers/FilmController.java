@@ -14,9 +14,9 @@ import java.util.HashMap;
 @RestController
 public class FilmController {
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
-    long lastId = 0;
+    private long lastId = 0;
 
-    HashMap<Long, Film> films = new HashMap();
+    private final HashMap<Long, Film> films = new HashMap();
 
     @GetMapping("/films")
     public Collection<Film> getFilms() {
@@ -34,11 +34,10 @@ public class FilmController {
 
     @PutMapping("/films")
     public Film updateFilm(@Validated @RequestBody Film film) {
-        if(films.containsKey(film.getId())){
-            log.info("Обновление фильма: {}", films.put(film.getId(), film));
-            return film;
-        } else {
+        if (!films.containsKey(film.getId())) {
             throw new ValidationException(String.format("%s is not registered", film));
         }
+        log.info("Обновление фильма: {}", films.put(film.getId(), film));
+        return film;
     }
 }
