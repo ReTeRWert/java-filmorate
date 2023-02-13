@@ -10,6 +10,6 @@ import static ru.yandex.practicum.filmorate.model.Constants.CINEMA_BIRTHDAY;
 public class DateFilmValidator implements ConstraintValidator<DateFilm, LocalDate> {
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext context) {
-            return  (value == null) || !value.isBefore(CINEMA_BIRTHDAY);
+            return  !(value == null) && !value.isBefore(CINEMA_BIRTHDAY);
     }
 }
