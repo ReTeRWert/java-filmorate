@@ -13,7 +13,7 @@ import java.util.HashMap;
 @RestController
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    private final HashMap<Long, User> userHashMap = new HashMap();
+    private final HashMap<Long, User> userHashMap = new HashMap<>();
     private long lastId = 0;
 
     @GetMapping("/users")
