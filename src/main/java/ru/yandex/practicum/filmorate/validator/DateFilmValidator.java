@@ -5,13 +5,11 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDate;
 
+import static ru.yandex.practicum.filmorate.model.Constants.CINEMA_BIRTHDAY;
+
 public class DateFilmValidator implements ConstraintValidator<DateFilm, LocalDate> {
     @Override
     public boolean isValid(LocalDate value, ConstraintValidatorContext context) {
-        if (value == null) {
-            return false;
-        } else {
-            return !value.isBefore(LocalDate.of(1895, 12, 28));
-        }
+            return  (value == null) || !value.isBefore(CINEMA_BIRTHDAY);
     }
 }
