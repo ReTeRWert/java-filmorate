@@ -10,6 +10,8 @@ import java.util.Objects;
 public class LoginValidator implements ConstraintValidator<Login, String> {
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return  StringUtils.hasText(value);
+        return  StringUtils.hasText(value)
+                && !value.contains("\t")
+                && !value.contains(" ");
     }
 }
