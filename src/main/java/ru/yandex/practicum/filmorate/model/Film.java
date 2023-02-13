@@ -1,40 +1,32 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Data
+@AllArgsConstructor
 public class Film {
-    private int id;
+    private Integer id;
     private String name;
     private String description;
     private LocalDate releaseDate;
-    private int duration;
+    private Integer duration;
 
-    public Film(int id, String name, String description, LocalDate releaseDate, int duration) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
-        this.duration = duration;
-    }
 
     @Override
+    // Тут equals не сравнивает строку id, т.к. при добавлении фильма он приходит без него, и получается что
+    // можно добавить один и тот же фильм несколько раз, потому что у того фильма, который уже в мапе, есть id, а у
+    // нового еще нет, и они будут считаться разными объектами.
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Film film = (Film) o;
-        return duration == film.duration &&
+        return Objects.equals(duration, film.duration) &&
                 Objects.equals(name, film.name) &&
                 Objects.equals(description, film.description) &&
                 Objects.equals(releaseDate, film.releaseDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, description, releaseDate, duration);
     }
 }
