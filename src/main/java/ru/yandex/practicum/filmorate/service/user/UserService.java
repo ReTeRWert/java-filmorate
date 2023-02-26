@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 
@@ -16,6 +17,13 @@ public class UserService {
     private final InMemoryUserStorage userStorage;
 
     public void addFriend(Integer userId, Integer friendId) {
+        if (userStorage.getUserById(userId) == null) {
+            throw new NotFoundException("Пользователя с id: " + userId + " не существует.");
+        }
+        if (userStorage.getUserById(friendId) == null) {
+            throw new NotFoundException("Друга с id: " + friendId + " не существует.");
+        }
+
         userStorage.getUserById(userId)
                 .getFriends()
                 .add(friendId);
@@ -26,6 +34,13 @@ public class UserService {
     }
 
     public void removeFriend(Integer userId, Integer friendId) {
+        if (userStorage.getUserById(userId) == null) {
+            throw new NotFoundException("Пользователя с id: " + userId + " не существует.");
+        }
+        if (userStorage.getUserById(friendId) == null) {
+            throw new NotFoundException("Друга с id: " + friendId + " не существует.");
+        }
+
         userStorage.getUserById(userId)
                 .getFriends()
                 .remove(friendId);
