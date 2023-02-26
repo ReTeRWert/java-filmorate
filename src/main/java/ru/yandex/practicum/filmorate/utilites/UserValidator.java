@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.utilites;
 
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ValidateException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
 
+@Component
 public class UserValidator {
 
     public void validateUser(User user) throws ValidateException {
