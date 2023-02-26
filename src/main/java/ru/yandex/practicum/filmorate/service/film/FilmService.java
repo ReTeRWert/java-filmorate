@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.utilites.FilmComparator;
 
 import java.util.List;
@@ -15,21 +14,17 @@ import java.util.stream.Collectors;
 public class FilmService {
 
     private final InMemoryFilmStorage filmStorage;
-    private final InMemoryUserStorage userStorage;
-
 
     public void addLike(Integer filmId, Integer userId) {
         filmStorage.getFilmById(filmId)
                 .getLikes()
-                .add(userStorage.getUserById(userId)
-                        .getEmail());
+                .add(userId);
     }
 
     public void removeLike(Integer filmId, Integer userId) {
         filmStorage.getFilmById(filmId)
                 .getLikes()
-                .remove(userStorage.getUserById(userId)
-                        .getEmail());
+                .remove(userId);
     }
 
     public Film getFilmById(Integer id) {
