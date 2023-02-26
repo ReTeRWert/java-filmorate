@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FilmValidatorTest extends FilmValidator {
 
     FilmValidator validator = new FilmValidator();
-    HashSet<String> likes = new HashSet<>();
+    HashSet<Integer> likes = new HashSet<>();
 
     @Test
     void validateFilmShouldReturnTrueWhenFilmCorrect() {
