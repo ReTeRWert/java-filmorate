@@ -18,5 +18,5 @@ public class Film {
     private String description;
     private LocalDate releaseDate;
     private Integer duration;
-    private HashSet<String> likes = new HashSet<>();
+    private HashSet<String> likes = new HashSet<>(); // тут будут храниться емейлы тех, кто поставил лайк
 }

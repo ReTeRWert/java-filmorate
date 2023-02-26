@@ -18,7 +18,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotFound(final NullPointerException e) {
+    public Map<String, String> handleNotFound(final NotFoundException e) {
         return Map.of("Объект не найден", e.getMessage());
     }
 

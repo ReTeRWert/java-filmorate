@@ -22,24 +22,24 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public void addFriend(Integer user, Integer friend) {
-        userStorage.getUserById(user)
+    public void addFriend(Integer userId, Integer friendId) {
+        userStorage.getUserById(userId)
                 .getFriends()
-                .add(userStorage.getUserById(friend).getId());
+                .add(friendId);
 
-        userStorage.getUserById(friend)
+        userStorage.getUserById(friendId)
                 .getFriends()
-                .add(userStorage.getUserById(user).getId());
+                .add(userId);
     }
 
-    public void removeFriend(Integer user, Integer friend) {
-        userStorage.getUserById(user)
+    public void removeFriend(Integer userId, Integer friendId) {
+        userStorage.getUserById(userId)
                 .getFriends()
-                .remove(userStorage.getUserById(friend).getId());
+                .remove(friendId);
 
-        userStorage.getUserById(friend)
+        userStorage.getUserById(friendId)
                 .getFriends()
-                .remove(userStorage.getUserById(user).getId());
+                .remove(userId);
     }
 
     public List<User> getListGeneralFriends(Integer verifiableUser, Integer comparedUser) {
@@ -56,5 +56,21 @@ public class UserService {
 
     public List<User> getFriends(Integer id) {
         return userStorage.getUserList(userStorage.getUserById(id).getFriends());
+    }
+
+    public List<User> getUsers() {
+        return userStorage.getUsers();
+    }
+
+    public User getUserById(Integer id) {
+        return userStorage.getUserById(id);
+    }
+
+    public void addUser(User user) {
+        userStorage.addUser(user);
+    }
+
+    public void updateUser(User user) {
+        userStorage.updateUser(user);
     }
 }

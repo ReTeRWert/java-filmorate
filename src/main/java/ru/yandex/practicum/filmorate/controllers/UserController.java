@@ -1,13 +1,13 @@
 package ru.yandex.practicum.filmorate.controllers;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidateException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.utilites.UserValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,25 +15,20 @@ import java.util.List;
 @RestController
 @RequestMapping
 @Slf4j
+@RequiredArgsConstructor
 public class UserController {
 
-    InMemoryUserStorage storage;
-    UserService service;
-
-    @Autowired
-    public UserController(InMemoryUserStorage storage, UserService service) {
-        this.storage = storage;
-        this.service = service;
-    }
+    private final UserValidator validator;
+    private final UserService service;
 
     @GetMapping("/users")
     public List<User> getUsers() {
-        return storage.getUsers();
+        return service.getUsers();
     }
 
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable(value = "id") Integer userId) {
-        return storage.getUserById(userId);
+        return service.getUserById(userId);
     }
 
     @GetMapping("/users/{id}/friends")
@@ -50,14 +45,16 @@ public class UserController {
 
     @PostMapping("/users")
     public User addUser(@RequestBody User user) throws ValidateException {
-        storage.addUser(user);
+        validator.validateUser(user);
+        service.addUser(user);
         log.info("Добавлен новый пользователь: {}", user);
         return user;
     }
 
     @PutMapping("/users")
     public User updateUser(@RequestBody User user) throws ValidateException {
-        storage.updateUser(user);
+        validator.validateUser(user);
+        service.updateUser(user);
         log.info("Пользователь обновлен: {}", user);
         return user;
     }

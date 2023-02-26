@@ -1,19 +1,20 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.utilites.FilmValidator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class InMemoryFilmStorage implements FilmStorage {
 
-    private final HashMap<Integer, Film> films = new HashMap<>();
-    private final FilmValidator validator = new FilmValidator();
+    private final HashMap<Integer, Film> films;
     private static int id = 1;
 
 
@@ -24,7 +25,6 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film addFilm(Film film) {
-        validator.validateFilm(film);
 
         if (films.containsValue(film)) {
             throw new ValidateException("Такой фильм уже есть");
@@ -39,10 +39,9 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        validator.validateFilm(film);
 
         if (!films.containsKey(film.getId())) {
-            throw new NullPointerException("Такого фильма еще нет.");
+            throw new NotFoundException("Такого фильма еще нет.");
         }
 
         films.replace(film.getId(), film);
@@ -52,7 +51,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     public Film getFilmById(Integer id) {
         if (!films.containsKey(id)) {
-            throw new NullPointerException("Фильма с id: " + id + " не существует.");
+            throw new NotFoundException("Фильма с id: " + id + " не существует.");
         }
         return films.get(id);
     }

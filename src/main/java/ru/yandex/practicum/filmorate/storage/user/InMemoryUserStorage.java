@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.storage.user;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidateException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
@@ -12,10 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class InMemoryUserStorage implements UserStorage {
 
-    private final HashMap<Integer, User> users = new HashMap<>();
-    private final UserValidator validator = new UserValidator();
+    private final HashMap<Integer, User> users;
     private static int id = 1;
 
 
@@ -26,8 +28,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User addUser(User user) {
-
-        validator.validateUser(user);
 
         if (users.containsValue(user)) {
             throw new ValidateException("Такой пользователь уже есть.");
@@ -42,10 +42,9 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        validator.validateUser(user);
 
         if (!users.containsKey(user.getId())) {
-            throw new NullPointerException("Такого пользователя еще нет, добавьте его");
+            throw new NotFoundException("Такого пользователя еще нет, добавьте его");
         }
 
         users.replace(user.getId(), user);
@@ -55,7 +54,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     public User getUserById(Integer id) {
         if (users.get(id) == null) {
-            throw new NullPointerException("Такого пользователя не существует.");
+            throw new NotFoundException("Такого пользователя не существует.");
         }
         return users.get(id);
     }
