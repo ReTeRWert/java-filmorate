@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage.friendship;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -32,6 +33,8 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     }
 
     public Collection<User> getCommonFriends(long userId, long friendId) {
+
+
         HashMap<Long, Boolean> friendListFirst = new HashMap<>(userStorage.get(userId).getFriends());
         HashMap<Long, Boolean> friendListSecond = new HashMap<>(userStorage.get(friendId).getFriends());
         Collection<User> friendsUser = new ArrayList<>();
@@ -41,7 +44,8 @@ public class InMemoryFriendshipStorage implements FriendshipStorage {
     }
 
     public boolean deleteFriend(long userId, long friendId) {
-
-        return userStorage.get(userId).getFriends().remove(friendId);
+        if(userStorage.get(userId).getFriends().remove(friendId)){return true;}else {
+            throw new NotFoundException("Таких друзей, нет в базе");
+        }
     }
 }
