@@ -32,6 +32,12 @@ public class FilmController {
         return filmService.getFilmStorage().getById(id);
     }
 
+
+    @GetMapping("/films/popular?count={count}")
+    public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count){
+        return filmService.getPopularFilm(count);
+    }
+
     @PostMapping
     public Film createFilm(@Validated @RequestBody Film film) {
         return filmService.getFilmStorage().create(film);
@@ -51,6 +57,8 @@ public class FilmController {
     public void addLike(@PathVariable long id, @PathVariable long userId) {
         filmService.addLike(id, userId);
     }
+
+
 
 
 }

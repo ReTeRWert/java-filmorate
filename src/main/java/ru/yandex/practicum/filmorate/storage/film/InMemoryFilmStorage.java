@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -67,8 +68,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getTopFilm(int count) {
-        return null;
+    public Collection<Film> getPorularFilm(Integer count) {
+        try {
+            if (count == null || count < 0) {count = 10;}
+            return films.values().stream().sorted(((o1, o2) -> (o2.getLikes().size() - o1.getLikes().size()))).limit(count).collect(Collectors.toList());
+        } catch (RuntimeException e){
+            throw new RuntimeException("Ошибка сервера");
+        }
     }
-
 }

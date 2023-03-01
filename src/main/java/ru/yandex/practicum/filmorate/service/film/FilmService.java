@@ -44,4 +44,8 @@ public class FilmService {
     public void deleteLike(long id, long userId){
         filmStorage.deleteLike(id,userId);
     }
+
+    public Collection<Film> getPopularFilm(Integer count){
+        return filmStorage.getPorularFilm(count);
+    }
 }

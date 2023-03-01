@@ -19,5 +19,7 @@ public interface FilmStorage {
 
     void deleteLike(long id, long userId);
 
-    Collection<Film> getTopFilm(int count);
+    Collection<Film> getPorularFilm(Integer count);
+
+
 }

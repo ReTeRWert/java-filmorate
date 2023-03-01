@@ -27,15 +27,7 @@ public class UserController {
     public Collection<User> getUsers() {
         return userService.getUserStorage().getUsers();
     }
-    @GetMapping("/{id}")
-    public User getUser(@PathVariable long id) throws RuntimeException {
-        return userService.getUserStorage().get(id);
-    }
 
-    @GetMapping("/{id}/friends")
-    public Collection<User> allFriendsUser(@PathVariable long id) throws RuntimeException{
-        return userService.getFriendsUser(id);
-    }
 
     @PostMapping
     public User create(@RequestBody @Validated User user) throws RuntimeException{
@@ -57,7 +49,21 @@ public class UserController {
         userService.deleteFriend(id, friendId);
     }
 
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable long id) throws RuntimeException {
+        return userService.getUserStorage().get(id);
+    }
 
+    @GetMapping("/{id}/friends")
+    public Collection<User> allFriendsUser(@PathVariable long id) throws RuntimeException{
+        return userService.getFriendsUser(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId)
+            throws RuntimeException{
+        return userService.getFriendshipStorage().getCommonFriends(id, otherId);
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
