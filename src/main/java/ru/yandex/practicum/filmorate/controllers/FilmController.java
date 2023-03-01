@@ -1,43 +1,56 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
-import javax.validation.ValidationException;
 import java.util.Collection;
-import java.util.HashMap;
 
+@Slf4j
 @RestController
+@RequestMapping("/films")
 public class FilmController {
-    private static final Logger log = LoggerFactory.getLogger(FilmController.class);
-    private long lastId = 0;
+    //private static final Logger log = LoggerFactory.getLogger(FilmController.class);
+    private final FilmService filmService;
 
-    private final HashMap<Long, Film> films = new HashMap<>();
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
-    @GetMapping("/films")
+
+    @GetMapping
     public Collection<Film> getFilms() {
-        log.info("Запрошен список фильмов");
-        return films.values();
+        return filmService.getFilmStorage().getFilms();
     }
 
-    @PostMapping("/films")
+    @GetMapping("/{id}")
+    public Film getFilm(@PathVariable long id) throws RuntimeException {
+        return filmService.getFilmStorage().getById(id);
+    }
+
+    @PostMapping
     public Film createFilm(@Validated @RequestBody Film film) {
-        film.setId(++lastId);
-        log.debug("Добавлен фильм: {}", film);
-        Film s = films.put(film.getId(), film);
-        return film;
+        return filmService.getFilmStorage().create(film);
     }
 
-    @PutMapping("/films")
+    @PutMapping
     public Film updateFilm(@Validated @RequestBody Film film) {
-        if (!films.containsKey(film.getId())) {
-            throw new ValidationException(String.format("%s is not registered", film));
-        }
-        log.info("Обновление фильма: {}", films.put(film.getId(), film));
-        return film;
+        return filmService.getFilmStorage().update(film);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteFilm(@PathVariable long id) {
+        filmService.delete(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable long id, @PathVariable long userId) {
+        filmService.addLike(id, userId);
+    }
+
+
 }

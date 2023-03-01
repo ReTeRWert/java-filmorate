@@ -1,41 +1,73 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 
-import javax.validation.ValidationException;
 import java.util.Collection;
-import java.util.HashMap;
 
+
+@Slf4j
 @RestController
+@RequestMapping("/users")
 public class UserController {
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    private final HashMap<Long, User> userHashMap = new HashMap<>();
-    private long lastId = 0;
+    private final UserService userService;
 
-    @GetMapping("/users")
-    public Collection<User> getUserHashMap() {
-        log.info("Запрошен список пользователей");
-        return userHashMap.values();
+    @Autowired
+    public UserController(UserService userService){
+        this.userService = userService;
     }
 
-    @PostMapping("/users")
-    public User create(@RequestBody @Validated User user) {
-        user.setId(++lastId);
-        log.info("Добавлен пользователь: {}", user);
-        userHashMap.put(user.getId(), user);
-        return user;
+    @GetMapping
+    public Collection<User> getUsers() {
+        return userService.getUserStorage().getUsers();
+    }
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable long id) throws RuntimeException {
+        return userService.getUserStorage().get(id);
     }
 
-    @PutMapping("/users")
-    public User update(@RequestBody @Validated User user) {
-        if (!userHashMap.containsKey(user.getId())) {
-            throw new ValidationException(String.format("%s is not registered", user));
-        }
-        log.info("Обновление пользователя: {}", userHashMap.put(user.getId(), user));
-        return user;
+    @GetMapping("/{id}/friends")
+    public Collection<User> allFriendsUser(@PathVariable long id) throws RuntimeException{
+        return userService.getFriendsUser(id);
+    }
+
+    @PostMapping
+    public User create(@RequestBody @Validated User user) throws RuntimeException{
+        return userService.getUserStorage().create(user);
+    }
+
+    @PutMapping
+    public User update(@RequestBody @Validated User user) throws RuntimeException {
+        return userService.getUserStorage().update(user);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable long id, @PathVariable long friendId) throws RuntimeException{
+        userService.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) throws RuntimeException {
+        userService.deleteFriend(id, friendId);
+    }
+
+
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserNotFound(final NotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleServerError(final RuntimeException e) {
+        return new ErrorResponse(e.getMessage());
     }
 }

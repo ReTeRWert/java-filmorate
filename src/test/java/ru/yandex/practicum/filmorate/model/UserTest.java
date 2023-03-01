@@ -7,7 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.controllers.UserController;
+import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -64,9 +66,6 @@ public class UserTest {
     void checkLoginValidation(String testLogin, int expectSize, String expected) {
         user.setLogin(testLogin);
         Set<ConstraintViolation<User>> violations = validator.validate(user);
-        UserController box = new UserController();
-        box.create(user);
-        System.out.println(box.getUserHashMap());
         Assertions.assertEquals(expectSize, violations.size());
         if (!violations.isEmpty()) {
             Assertions.assertEquals(expected, violations.iterator().next().getMessage());
