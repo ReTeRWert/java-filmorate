@@ -17,12 +17,10 @@ import java.util.Collection;
 @Service
 public class UserService {
     private final UserStorage userStorage;
-    private final FriendshipStorage friendshipStorage;
 
     @Autowired
-    public UserService(UserStorage userStorage, FriendshipStorage friendshipStorage){
+    public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
-        this.friendshipStorage = friendshipStorage;
     }
 
     public User getUser(Long userId) throws NotFoundException {
@@ -32,6 +30,7 @@ public class UserService {
         }
         return user;
     }
+
     public void delete(Long id) throws NotFoundException {
         if (userStorage.get(id) != null) {
             userStorage.delete(id);
@@ -39,8 +38,9 @@ public class UserService {
             throw new NotFoundException("User with id = " + id + " not found");
         }
     }
-    public void addFriend(long userId, long friendId) throws NotFoundException {
-        if(userId == friendId){
+
+    public User addFriend(Long userId, Long friendId) throws NotFoundException {
+        if (userId == friendId) {
             log.debug("Пользователь не может быть другом самому себе");
             throw new ValidationException("Ошибка валидации");
         }
@@ -51,23 +51,24 @@ public class UserService {
         } else if (friend == null) {
             throw new NotFoundException("User with id = " + friendId + " not found");
         } else {
-            friendshipStorage.addFriend(userId, friendId);
+            userStorage.addFriend(userId, friendId);
+            return user;
         }
     }
 
-    public void deleteFriend(long idUser, long idFriend){
-        if(!(friendshipStorage.deleteFriend(idUser,idFriend))){
+    public User deleteFriend(Long idUser, Long idFriend) {
+        if (!(userStorage.deleteFriend(idUser, idFriend))) {
             throw new NotFoundException("Not friendship");
         }
+        return userStorage.get(idUser);
     }
 
-    public Collection<User> getFriendsUser(long userId) throws NotFoundException {
+    public Collection<User> getFriendsUser(Long userId) throws NotFoundException {
         User user = userStorage.get(userId);
         if (user == null) {
             throw new NotFoundException("User with id = " + userId + " not found");
         } else {
-            Collection<User> friendsList = friendshipStorage.getFriendsUser(userId);
-            return friendsList;
+            return userStorage.getFriendsUser(userId);
         }
     }
 }

@@ -36,6 +36,6 @@ public class User {
         }
     }
 
-    @Builder.Default
+    //@Builder.Default
     private final HashMap<Long, Boolean> friends = new HashMap<>();
 }

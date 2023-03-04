@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,8 +41,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public void addFriend(@PathVariable long id, @PathVariable long friendId) throws RuntimeException{
-        userService.addFriend(id, friendId);
+    public User addFriend(@PathVariable Long id, @PathVariable Long friendId) throws RuntimeException{
+        //log.debug("Попытка добавить друга{}",id);
+        return userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
@@ -50,19 +52,19 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable long id) throws RuntimeException {
+    public User getUser(@PathVariable Long id) throws RuntimeException {
         return userService.getUserStorage().get(id);
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<User> allFriendsUser(@PathVariable long id) throws RuntimeException{
+    public Collection<User> allFriendsUser(@PathVariable Long id) throws RuntimeException{
         return userService.getFriendsUser(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId)
             throws RuntimeException{
-        return userService.getFriendshipStorage().getCommonFriends(id, otherId);
+        return userService.getUserStorage().getCommonFriends(id, otherId);
     }
 
     @ExceptionHandler

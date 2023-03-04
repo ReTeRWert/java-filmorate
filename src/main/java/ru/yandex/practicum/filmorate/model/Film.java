@@ -25,7 +25,7 @@ public class Film {
     private final static Logger log = LoggerFactory.getLogger(Film.class);
 
     @Setter(AccessLevel.NONE)
-    private Set<Long> likes = new HashSet<>();
+    private final Set<Long> likes = new HashSet<>();
 
     @NotBlank(message = "Название не может быть пустым;")
     private String name;

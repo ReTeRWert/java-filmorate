@@ -36,14 +36,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void delete(long id) {
+    public void delete(Long id) {
         if (films.remove(id) == null) {
             throw new NotFoundException("Фильма с таким ID нет в базе");
         }
     }
 
     @Override
-    public Film getById(long id) {
+    public Film getById(Long id) {
         Film film = films.get(id);
         if (film != null) {
             return film;
@@ -58,21 +58,25 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public void addLike(long id, long userId) {
+    public Film addLike(Long id, Long userId) {
         films.get(id).getLikes().add(userId);
+        return films.get(id);
     }
 
     @Override
-    public void deleteLike(long id, long userId) {
+    public Film deleteLike(Long id, Long userId) {
         films.get(id).getLikes().remove(userId);
+        return films.get(id);
     }
 
     @Override
-    public Collection<Film> getPorularFilm(Integer count) {
+    public Collection<Film> getPorularFilm(int count) {
         try {
-            if (count == null || count < 0) {count = 10;}
+            if (count < 0) {
+                count = 10;
+            }
             return films.values().stream().sorted(((o1, o2) -> (o2.getLikes().size() - o1.getLikes().size()))).limit(count).collect(Collectors.toList());
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw new RuntimeException("Ошибка сервера");
         }
     }
