@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,28 +27,28 @@ public class FilmController {
 
     @GetMapping
     public Collection<Film> getFilms() throws NotFoundException {
-        return filmService.getFilmStorage().getFilms();
+        return filmService.getAllFilms();
     }
 
     @GetMapping("/{id}")
     public Film getFilm(@PathVariable Long id) throws NotFoundException {
-        return filmService.getFilmStorage().getById(id);
+        return filmService.getById(id);
     }
 
 
     @GetMapping("/popular")
-    public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count){
+    public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count) {
         return filmService.getPopularFilm(count);
     }
 
     @PostMapping
-    public Film createFilm(@Validated @RequestBody Film film) throws RuntimeException  {
-        return filmService.getFilmStorage().create(film);
+    public Film createFilm(@Validated @RequestBody Film film) throws RuntimeException {
+        return filmService.create(film);
     }
 
     @PutMapping
     public Film updateFilm(@Validated @RequestBody Film film) throws NotFoundException {
-        return filmService.getFilmStorage().update(film);
+        return filmService.update(film);
     }
 
     @DeleteMapping("/{id}")
@@ -62,8 +62,8 @@ public class FilmController {
     }
 
     @DeleteMapping("{id}/like/{userId}")
-    public Film deleteLike(@PathVariable Long id,@PathVariable Long userId) throws NotFoundException{
-        return filmService.deleteLike(id,userId);
+    public Film deleteLike(@PathVariable Long id, @PathVariable Long userId) throws NotFoundException {
+        return filmService.deleteLike(id, userId);
     }
 
     @ExceptionHandler

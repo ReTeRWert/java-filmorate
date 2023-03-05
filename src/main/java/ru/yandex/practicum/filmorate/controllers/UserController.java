@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,29 +19,29 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
     public Collection<User> getUsers() {
-        return userService.getUserStorage().getUsers();
+        return userService.getUsers();
     }
 
 
     @PostMapping
-    public User create(@RequestBody @Validated User user) throws RuntimeException{
-        return userService.getUserStorage().create(user);
+    public User create(@RequestBody @Validated User user) throws RuntimeException {
+        return userService.create(user);
     }
 
     @PutMapping
     public User update(@RequestBody @Validated User user) throws RuntimeException {
-        return userService.getUserStorage().update(user);
+        return userService.update(user);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriend(@PathVariable Long id, @PathVariable Long friendId) throws RuntimeException{
-        //log.debug("Попытка добавить друга{}",id);
+    public User addFriend(@PathVariable Long id, @PathVariable Long friendId) throws RuntimeException {
+        log.debug("Попытка добавить друга{}", id);
         return userService.addFriend(id, friendId);
     }
 
@@ -51,20 +50,25 @@ public class UserController {
         userService.deleteFriend(id, friendId);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) throws RuntimeException {
+        userService.delete(id);
+    }
+
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) throws RuntimeException {
-        return userService.getUserStorage().get(id);
+        return userService.getUser(id);
     }
 
     @GetMapping("/{id}/friends")
-    public Collection<User> allFriendsUser(@PathVariable Long id) throws RuntimeException{
+    public Collection<User> allFriendsUser(@PathVariable Long id) throws RuntimeException {
         return userService.getFriendsUser(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId)
-            throws RuntimeException{
-        return userService.getUserStorage().getCommonFriends(id, otherId);
+            throws RuntimeException {
+        return userService.getCommonFriends(id, otherId);
     }
 
     @ExceptionHandler

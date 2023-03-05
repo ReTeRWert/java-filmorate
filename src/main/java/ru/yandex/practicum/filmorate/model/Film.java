@@ -14,19 +14,16 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static ru.yandex.practicum.filmorate.model.Constants.MAX_LENGTH_DESCRIPTION_FILM;
 
 @Data
 @Builder(toBuilder = true)
 public class Film {
-    private Long id;
     private final static Logger log = LoggerFactory.getLogger(Film.class);
-
     @Setter(AccessLevel.NONE)
     private final Set<Long> likes = new HashSet<>();
-
+    private Long id;
     @NotBlank(message = "Название не может быть пустым;")
     private String name;
     @Size(max = MAX_LENGTH_DESCRIPTION_FILM, message = "Максимальная длина описания — " + MAX_LENGTH_DESCRIPTION_FILM + " символов")
