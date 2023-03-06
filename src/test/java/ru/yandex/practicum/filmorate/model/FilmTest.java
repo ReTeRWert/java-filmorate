@@ -37,9 +37,9 @@ public class FilmTest {
     @DisplayName("MaxSize description validation")
     @Test
     void checkDescriptionValidation() {
-        film.setDescription(Stream.generate(() -> ("*")).limit(MAX_LENGTH_DESCRIPTION_FILM+1).collect(Collectors.joining()));
+        film.setDescription(Stream.generate(() -> ("*")).limit(MAX_LENGTH_DESCRIPTION_FILM + 1).collect(Collectors.joining()));
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
-        Assertions.assertEquals("Максимальная длина описания — "+MAX_LENGTH_DESCRIPTION_FILM+" символов", violations.iterator().next().getMessage());
+        Assertions.assertEquals("Максимальная длина описания — " + MAX_LENGTH_DESCRIPTION_FILM + " символов", violations.iterator().next().getMessage());
     }
 
     @DisplayName("NotBlank name validation")
