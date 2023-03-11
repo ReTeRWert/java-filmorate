@@ -1,10 +1,12 @@
 package ru.yandex.practicum.filmorate.utilites;
 
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 
+@Component
 public class FilmValidator {
     private static final LocalDate movieBirthday = LocalDate.of(1895, 12, 28);
 
