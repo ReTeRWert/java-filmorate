@@ -2,7 +2,7 @@
 
 Template repository for Filmorate project.
 
-![Ссылка на структуру базы данных для приложения Filmorate:](info/db_sheme.png)
+![Ссылка на структуру базы данных для приложения Filmorate:](https://github.com/84R5/java-filmorate/blob/add-friends-likes/info/db_sheme.png)
 
 SELECT *
 FROM film;
