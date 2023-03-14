@@ -13,6 +13,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static ru.yandex.practicum.filmorate.model.Constants.MAX_LENGTH_DESCRIPTION_FILM;
@@ -28,6 +29,8 @@ public class Film {
     private String name;
     @Size(max = MAX_LENGTH_DESCRIPTION_FILM, message = "Максимальная длина описания — " + MAX_LENGTH_DESCRIPTION_FILM + " символов")
     private String description;
+    private MPA mpa;
+    private LinkedHashSet<Genre> genres;
     @DateFilm(message = "дата релиза — не раньше 28 декабря 1895 года")
     private LocalDate releaseDate;
     @Positive(message = "Продолжительность фильма должна быть положительной.")
