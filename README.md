@@ -7,7 +7,7 @@ Template repository for Filmorate project.
 SELECT *
 FROM film;
 
-SELECT *  
+SELECT *
 FROM user;
 
 SELECT f.film_id, f.film_name, COUNT(u.user_id) AS likes_count  
