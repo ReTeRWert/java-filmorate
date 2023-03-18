@@ -20,7 +20,7 @@ public class LikeService {
         likeDbStorage.removeLike(filmId, userId);
     }
 
-    public List<Film> getMustPopularFilms(Integer limit) {
+    public List<Film> getMOstPopularFilms(Integer limit) {
         return likeDbStorage.getMostPopular(limit);
     }
 }

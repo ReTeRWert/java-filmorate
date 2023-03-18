@@ -11,8 +11,10 @@ import ru.yandex.practicum.filmorate.storage.genres.GenreDbStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Qualifier
 @Component
@@ -26,10 +28,12 @@ public class FilmGenresDbStorage implements FilmGenreStorage {
     @Override
     public void updateGenresByFilm(Film film) {
         checkGenres(film);
-        String sql = "delete from film_genres where film_id = ?";
+        String sql = "DELETE FROM film_genres " +
+                "WHERE film_id = ?";
         jdbcTemplate.update(sql, film.getId());
 
-        sql = "insert into film_genres (film_id, genre_id) values (?,?)";
+        sql = "INSERT INTO film_genres(film_id, genre_id) " +
+                "VALUES (?,?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -46,13 +50,18 @@ public class FilmGenresDbStorage implements FilmGenreStorage {
 
     @Override
     public void removeGenreFromFilm(Integer filmId, Integer genreId) {
-        String sql = "delete from film_genres where film_id =? and genre_id =?";
+        String sql = "DELETE FROM film_genres " +
+                "WHERE film_id =? AND genre_id =?";
         jdbcTemplate.update(sql, filmId, genreId);
     }
 
     @Override
     public List<Genre> getGenresByFilm(Integer filmId) {
-        String sql = "select genre_name from genres where genres.genre_id IN (select * from film_genres where film_id = ?)";
+        String sql = "SELECT genre_name " +
+                "FROM genres " +
+                "WHERE genres.genre_id IN (SELECT * " +
+                "                           FROM film_genres " +
+                "                           WHERE film_id = ?)";
         return jdbcTemplate.query(sql, (rs, rowNum) -> genreDbStorage.makeGenre(rs), filmId);
     }
 

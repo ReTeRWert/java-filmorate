@@ -23,11 +23,11 @@ public class GenreDbStorage implements GenreStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-
-
     @Override
     public Genre getGenreById(int id) {
-        String sql = "select * from genres where genre_id = ?";
+        String sql = "SELECT * " +
+                "FROM genres " +
+                "WHERE genre_id = ?";
         List<Genre> genres = jdbcTemplate.query(sql, (rs, rowNum) -> makeGenre(rs), id);
         if(genres.size() != 1) {
             throw new NotFoundException("Жанра с таким идентификатором не существует.");
@@ -37,15 +37,19 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public List<Genre> getGenres() {
-        String sql = "select * from genres";
+        String sql = "SELECT * " +
+                "FROM genres";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeGenre(rs));
     }
 
     public void addGenresForFilms(List<Film> films) {
         String forInSql = String.join(",", Collections.nCopies(films.size(), "?"));
         final Map<Integer, Film> filmById = films.stream().collect(Collectors.toMap(Film::getId, Function.identity()));
-        final String sql = "SELECT * FROM film_genres AS fg, genres AS g " +
-                "WHERE fg.genre_id = g.genre_id and fg.film_id IN (" + forInSql + ")";
+
+        final String sql = "SELECT * " +
+                "FROM film_genres AS fg, genres AS g " +
+                "WHERE fg.genre_id = g.genre_id AND fg.film_id IN (" + forInSql + ")";
+
         jdbcTemplate.query(sql, (rs) -> {
             final Film film = filmById.get(rs.getInt("film_id"));
             film.addGenre(makeGenre(rs));

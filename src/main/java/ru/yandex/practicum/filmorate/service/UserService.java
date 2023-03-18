@@ -8,8 +8,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.friends.FriendDbStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @Service

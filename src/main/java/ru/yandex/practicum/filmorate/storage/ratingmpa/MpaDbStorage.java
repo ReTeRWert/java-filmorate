@@ -18,10 +18,11 @@ public class MpaDbStorage implements RatingMpaStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-
     @Override
     public Mpa getRatingById(Integer id) {
-        String sql = "select * from rating_mpa where rating_id = ?";
+        String sql = "SELECT * " +
+                "FROM rating_mpa " +
+                "WHERE rating_id = ?";
 
         List<Mpa> mpas = jdbcTemplate.query(sql, (rs, rowNum) -> makeRating(rs), id);
 
@@ -37,7 +38,8 @@ public class MpaDbStorage implements RatingMpaStorage {
 
     @Override
     public List<Mpa> getRatings() {
-        String sql = "select * from rating_mpa";
+        String sql = "SELECT * " +
+                "FROM rating_mpa";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeRating(rs));
     }
 }

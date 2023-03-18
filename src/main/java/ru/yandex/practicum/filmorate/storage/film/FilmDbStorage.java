@@ -28,7 +28,6 @@ public class FilmDbStorage implements FilmStorage {
     private final GenreDbStorage genreDbStorage;
     private final LikeDbStorage likeDbStorage;
 
-
     @Override
     public Film addFilm(Film film) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
@@ -45,8 +44,9 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film updateFilm(Film film) {
-        String sql = "update films set film_name = ?, film_description = ?, release_date =?, duration = ?," +
-                "rating_id =? where film_id =?";
+        String sql = "UPDATE films " +
+                "SET film_name = ?, film_description = ?, release_date =?, duration = ?, rating_id =? " +
+                "WHERE film_id =?";
         jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                 film.getMpa().getId(), film.getId());
 
@@ -63,14 +63,18 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getFilms() {
-        String sql = "select * from films as f join rating_mpa as r ON f.rating_id = r.rating_id";
+        String sql = "SELECT * " +
+                "FROM films AS f " +
+                "JOIN rating_mpa AS r ON f.rating_id = r.rating_id";
         List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs));
         genreDbStorage.addGenresForFilms(films);
         return films;
     }
 
     public Film getFilmById(Integer filmId) {
-        String sql = "select * from films as f, rating_mpa as r where f.rating_id = r.rating_id and f.film_id = ?";
+        String sql = "SELECT * " +
+                "FROM films AS f, rating_mpa AS r " +
+                "WHERE f.rating_id = r.rating_id AND f.film_id = ?";
         List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), filmId);
         if (films.size() != 1) {
             throw new NotFoundException("Фильма с таким id не существует.");
@@ -80,7 +84,8 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public void removeFilm(Integer filmId) {
-        String sql = "delete from films where film_id =?";
+        String sql = "DELETE FROM films " +
+                "WHERE film_id =?";
         jdbcTemplate.update(sql, filmId);
     }
 

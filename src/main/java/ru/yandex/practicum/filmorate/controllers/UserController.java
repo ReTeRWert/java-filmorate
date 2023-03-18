@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/users")
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
@@ -22,7 +22,7 @@ public class UserController {
     private final UserService service;
 
 
-    @PostMapping("/users")
+    @PostMapping
     public User addUser(@RequestBody User user) throws ValidateException {
         validator.validateUser(user);
         service.addUser(user);
@@ -30,7 +30,7 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/users")
+    @PutMapping
     public User updateUser(@RequestBody User user) throws ValidateException {
         validator.validateUser(user);
         service.updateUser(user);
@@ -38,23 +38,23 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public User getUserById(@PathVariable(value = "id") Integer userId) {
         return service.getUserById(userId);
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public List<User> getUsers() {
         return service.getUsers();
     }
 
 
-    @GetMapping("/users/{id}/friends")
+    @GetMapping("/{id}/friends")
     public List<User> getFriends(@PathVariable Integer id) {
         return service.getFriendsUser(id);
     }
 
-    @GetMapping("/users/{id}/friends/common/{otherId}")
+    @GetMapping("/{id}/friends/common/{otherId}")
     public List<User> getCommonFriends(@PathVariable(value = "id") Integer verifiableUser,
                                        @PathVariable(value = "otherId") Integer comparedUser) {
 
@@ -62,12 +62,12 @@ public class UserController {
     }
 
 
-    @PutMapping("/users/{id}/friends/{friendId}")
+    @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable(value = "id") Integer userId, @PathVariable Integer friendId) {
         service.addFriend(userId, friendId);
     }
 
-    @DeleteMapping("/users/{id}/friends/{friendId}")
+    @DeleteMapping("/{id}/friends/{friendId}")
     public void removeFriend(@PathVariable(value = "id") Integer userId,
                              @PathVariable Integer friendId) {
 

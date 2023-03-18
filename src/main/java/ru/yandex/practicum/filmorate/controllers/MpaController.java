@@ -13,18 +13,18 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping
+@RequestMapping("/mpa")
 @RequiredArgsConstructor
 public class MpaController {
 
     private final MpaService ratingService;
 
-    @GetMapping("/mpa")
+    @GetMapping
     public List<Mpa> getRatings() {
         return ratingService.getRatings();
     }
 
-    @GetMapping("/mpa/{id}")
+    @GetMapping("/{id}")
     public Mpa getRatingById(@PathVariable Integer id) {
         return ratingService.getRatingById(id);
     }

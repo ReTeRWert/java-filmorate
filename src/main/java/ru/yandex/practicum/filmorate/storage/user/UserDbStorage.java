@@ -36,7 +36,9 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        String sql = "update users set email = ?, login = ?, user_name =?, birthday = ? where user_id =?";
+        String sql = "UPDATE users " +
+                "SET email = ?, login = ?, user_name =?, birthday = ? " +
+                "WHERE user_id =?";
         jdbcTemplate.update(sql, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
 
         return user;
@@ -44,12 +46,14 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public List<User> getUsers() {
-        String sql = "select * from users";
+        String sql = "SELECT * FROM users";
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeUser(rs));
     }
 
     public User getUserById(Integer userId) {
-        String sql = "select * from users where user_id =?";
+        String sql = "SELECT * " +
+                "FROM users " +
+                "WHERE user_id =?";
         List<User> users = jdbcTemplate.query(sql, (rs, rowNum) -> makeUser(rs), userId);
         if (users.size() != 1) {
             throw new NotFoundException("Такого пользователя не существует.");
@@ -58,7 +62,8 @@ public class UserDbStorage implements UserStorage {
     }
 
     public void removeUserById(Integer userId) {
-        String sql = "delete from users where user_id = ?";
+        String sql = "DELETE FROM users " +
+                "WHERE user_id = ?";
         jdbcTemplate.update(sql, userId);
     }
 
