@@ -60,8 +60,8 @@ public class FilmGenresDbStorage implements FilmGenreStorage {
         String sql = "SELECT genre_name " +
                 "FROM genres " +
                 "WHERE genres.genre_id IN (SELECT * " +
-                "                           FROM film_genres " +
-                "                           WHERE film_id = ?)";
+                "FROM film_genres " +
+                "WHERE film_id = ?)";
         return jdbcTemplate.query(sql, (rs, rowNum) -> genreDbStorage.makeGenre(rs), filmId);
     }
 
