@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.filmgenres;
+package ru.yandex.practicum.filmorate.storage.db;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.genres.GenreDbStorage;
+import ru.yandex.practicum.filmorate.storage.FilmGenreStorage;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

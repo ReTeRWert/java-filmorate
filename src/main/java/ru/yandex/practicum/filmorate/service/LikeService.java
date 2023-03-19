@@ -2,10 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.like.LikeDbStorage;
-
-import java.util.List;
+import ru.yandex.practicum.filmorate.storage.db.LikeDbStorage;
 
 @Service
 @RequiredArgsConstructor
@@ -18,9 +15,5 @@ public class LikeService {
 
     public void removeLike(Integer filmId, Integer userId) {
         likeDbStorage.removeLike(filmId, userId);
-    }
-
-    public List<Film> getMOstPopularFilms(Integer limit) {
-        return likeDbStorage.getMostPopular(limit);
     }
 }

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.friends;
+package ru.yandex.practicum.filmorate.storage.db;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.FriendStorage;
 
 import java.util.List;
 

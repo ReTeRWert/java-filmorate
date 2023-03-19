@@ -5,9 +5,9 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmDbStorage;
-import ru.yandex.practicum.filmorate.storage.like.LikeDbStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserDbStorage;
+import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
+import ru.yandex.practicum.filmorate.storage.db.LikeDbStorage;
+import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class FilmService {
     }
 
     public List<Film> getMostPopularFilms(Integer limit) {
-        return likeDbStorage.getMostPopular(limit);
+        return filmDbStorage.getMostPopular(limit);
     }
 
     public void removeFilmById(Integer filmId) {
@@ -59,7 +59,7 @@ public class FilmService {
         checkUser(userId);
 
         likeDbStorage.addLike(filmId, userId);
-        likeDbStorage.updateRate(filmDbStorage.getFilmById(filmId));
+        filmDbStorage.updateRate(filmDbStorage.getFilmById(filmId));
     }
 
     public void removeLike(Integer filmId, Integer userId) {
@@ -67,7 +67,7 @@ public class FilmService {
         checkUser(userId);
 
         likeDbStorage.removeLike(filmId, userId);
-        likeDbStorage.updateRate(filmDbStorage.getFilmById(filmId));
+        filmDbStorage.updateRate(filmDbStorage.getFilmById(filmId));
     }
 
     private void checkFilm(Integer filmId) {
