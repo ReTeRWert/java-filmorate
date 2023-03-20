@@ -60,11 +60,17 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
+    // если честно я не очень представляю как тут одним запросом можно собрать сразу фильм со списком жанров. Структура
+    // такая, что каждому фильму соответствует одно значение. А вот уже жанров может быть несколько, поэтому для них
+    // создана отдельная таблица, и как их совместить в одной вообще непонятно. Сейчас фильмы собираются отдельно, жанры
+    // отдельно, а потом собираются в единый объект.
+
     @Override
     public List<Film> getFilms() {
         String sql = "SELECT * " +
-                "FROM films AS f " +
-                "JOIN rating_mpa AS r ON f.rating_id = r.rating_id";
+                "FROM films AS f,  " +
+                "JOIN rating_mpa AS r ON f.rating_id = r.rating_id ";
+
         List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs));
         setGenresInFilms(films);
         return films;
@@ -120,8 +126,6 @@ public class FilmDbStorage implements FilmStorage {
         jdbcTemplate.update(sql, (filmRate + film.getRate()), film.getId());
     }
 
-    // метод для получения жанров из базы и добавления к классу модели, мне показалось так лучше, чем делать
-    // один большой запрос
     private void setGenresInFilms(List<Film> films) {
         String forInSql = String.join(",", Collections.nCopies(films.size(), "?"));
         final Map<Integer, Film> filmById = films.stream().collect(Collectors.toMap(Film::getId, Function.identity()));
