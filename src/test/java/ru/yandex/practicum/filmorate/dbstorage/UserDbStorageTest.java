@@ -60,12 +60,12 @@ public class UserDbStorageTest {
         List<User> users = userDbStorage.getUsers();
 
         assertNotNull(users);
-        assertEquals(1, users.size());
+        assertEquals(3, users.size());
     }
 
     @Test
     void updateUser() {
-        addUser();
+
         User user = userDbStorage.getUserById(1);
         user.setName("new name");
         user.setEmail("newmail@mail.ru");

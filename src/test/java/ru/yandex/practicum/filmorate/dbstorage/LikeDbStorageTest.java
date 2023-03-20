@@ -77,8 +77,5 @@ public class LikeDbStorageTest {
         count = jdbcTemplate.queryForObject(sql, Integer.class, 1);
 
         assertEquals(0, count);
-
-        removeFriendAndUser();
-
     }
 }

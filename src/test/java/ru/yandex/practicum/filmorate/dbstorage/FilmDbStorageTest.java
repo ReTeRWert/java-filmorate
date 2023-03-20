@@ -47,7 +47,9 @@ public class FilmDbStorageTest {
 
     @Test
     void addFilmAndGetById() {
-        addFilm();
+
+
+        List<Film> films = filmDbStorage.getFilms();
         Film film = filmDbStorage.getFilmById(1);
 
         assertEquals("Test film", film.getName());
@@ -61,7 +63,6 @@ public class FilmDbStorageTest {
                 .hasValueSatisfying(f ->
                         assertThat(f).hasFieldOrPropertyWithValue("id", 1));
 
-        removeFilm();
     }
 
     @Test

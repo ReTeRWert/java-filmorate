@@ -25,11 +25,6 @@ public class FriendDbStorageTest {
 
 
     private void addUsers() {
-        User user1 = new User();
-        user1.setEmail("user@mail.ru");
-        user1.setLogin("usertest");
-        user1.setName("Name user test");
-        user1.setBirthday(LocalDate.of(1957, 6, 14));
 
         User user2 = new User();
         user2.setEmail("friend@mail.ru");
@@ -37,7 +32,6 @@ public class FriendDbStorageTest {
         user2.setName("Name friend test");
         user2.setBirthday(LocalDate.of(1958, 7, 21));
 
-        userDbStorage.addUser(user1);
         userDbStorage.addUser(user2);
     }
 
