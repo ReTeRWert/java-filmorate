@@ -52,6 +52,11 @@ public class LikeDbStorageTest {
         userDbStorage.addUser(user);
     }
 
+    private void removeFriendAndUser() {
+        filmDbStorage.removeFilm(1);
+        userDbStorage.removeUserById(1);
+    }
+
     @Test
     void addLikeAndRemoveLike() {
         addFilmAndUser();
@@ -72,6 +77,8 @@ public class LikeDbStorageTest {
         count = jdbcTemplate.queryForObject(sql, Integer.class, 1);
 
         assertEquals(0, count);
+
+        removeFriendAndUser();
 
     }
 }

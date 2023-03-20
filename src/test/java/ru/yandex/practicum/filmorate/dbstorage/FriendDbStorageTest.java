@@ -23,6 +23,7 @@ public class FriendDbStorageTest {
     private final UserDbStorage userDbStorage;
     private final FriendDbStorage friendDbStorage;
 
+
     private void addUsers() {
         User user1 = new User();
         user1.setEmail("user@mail.ru");
@@ -40,11 +41,18 @@ public class FriendDbStorageTest {
         userDbStorage.addUser(user2);
     }
 
+    private void removeUsers() {
+
+        for (int i = 0; i < userDbStorage.getUsers().size(); i++) {
+            userDbStorage.removeUserById(i);
+        }
+    }
+
     @Test
     void addFriend() {
-        addUsers();
-        friendDbStorage.addFriend(1,2);
+        friendDbStorage.addFriend(1, 2);
 
+        List<User> users = userDbStorage.getUsers();
         List<User> friend = friendDbStorage.getFriendsUser(1);
 
         assertNotNull(friend);
@@ -54,10 +62,8 @@ public class FriendDbStorageTest {
 
     @Test
     void removeFriend() {
-        addUsers();
 
-        friendDbStorage.addFriend(1,2);
-        friendDbStorage.removeFriend(1,2);
+        friendDbStorage.removeFriend(1, 2);
 
         List<User> friendEmpty = friendDbStorage.getFriendsUser(1);
 
@@ -67,7 +73,6 @@ public class FriendDbStorageTest {
     @Test
     void getCommonFriends() {
         addUsers();
-
         User user3 = new User();
         user3.setEmail("commonfriend@mail.ru");
         user3.setLogin("commonfriendtest");
@@ -76,13 +81,18 @@ public class FriendDbStorageTest {
 
         userDbStorage.addUser(user3);
 
-        friendDbStorage.addFriend(1,3);
-        friendDbStorage.addFriend(2,3);
+        List<User> users = userDbStorage.getUsers();
 
-        List<User> commonFriend = friendDbStorage.getCommonFriends(1,2);
+        friendDbStorage.addFriend(1, 3);
+        friendDbStorage.addFriend(2, 3);
+
+        List<User> commonFriend = friendDbStorage.getCommonFriends(1, 2);
 
         assertEquals(1, commonFriend.size());
         assertEquals("commonfriendtest", commonFriend.get(0).getLogin());
+
+        friendDbStorage.removeFriend(1, 3);
+        friendDbStorage.removeFriend(2, 3);
     }
 
 }

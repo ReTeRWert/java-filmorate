@@ -25,7 +25,7 @@ public class UserDbStorageTest {
 
     private final UserDbStorage userDbStorage;
 
-    @BeforeEach
+
     private void addUser() {
         User user = new User();
         user.setEmail("mail@mail.ru");
@@ -36,17 +36,15 @@ public class UserDbStorageTest {
         userDbStorage.addUser(user);
     }
 
-    @AfterEach
     private void removeUser() {
         userDbStorage.removeUserById(1);
     }
 
     @Test
     void getById() {
-
         User user = userDbStorage.getUserById(1);
 
-        assertEquals("mail@mail.ru", user.getEmail());
+        assertEquals("newmail@mail.ru", user.getEmail());
 
         Optional<User> userOptional = Optional.of(user);
 
@@ -67,6 +65,7 @@ public class UserDbStorageTest {
 
     @Test
     void updateUser() {
+        addUser();
         User user = userDbStorage.getUserById(1);
         user.setName("new name");
         user.setEmail("newmail@mail.ru");

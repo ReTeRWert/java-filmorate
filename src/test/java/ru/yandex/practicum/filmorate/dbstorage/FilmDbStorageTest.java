@@ -1,9 +1,7 @@
 package ru.yandex.practicum.filmorate.dbstorage;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,7 +25,7 @@ public class FilmDbStorageTest {
 
     private final FilmDbStorage filmDbStorage;
 
-    @BeforeEach
+
     private void addFilm() {
         Film film = new Film();
         film.setName("Test film");
@@ -40,14 +38,16 @@ public class FilmDbStorageTest {
         filmDbStorage.addFilm(film);
     }
 
-    @AfterEach
     private void removeFilm() {
-        filmDbStorage.removeFilm(1);
-    }
 
+        for (int i = 0; i < filmDbStorage.getFilms().size(); i++){
+            filmDbStorage.removeFilm(i);
+        }
+    }
 
     @Test
     void addFilmAndGetById() {
+        addFilm();
         Film film = filmDbStorage.getFilmById(1);
 
         assertEquals("Test film", film.getName());
@@ -60,18 +60,13 @@ public class FilmDbStorageTest {
                 .isPresent()
                 .hasValueSatisfying(f ->
                         assertThat(f).hasFieldOrPropertyWithValue("id", 1));
-    }
 
-    @Test
-    void getFilms() {
-        List<Film> films = filmDbStorage.getFilms();
-
-        assertNotNull(films);
-        assertEquals(1, films.size());
+        removeFilm();
     }
 
     @Test
     void updateFilm() {
+
         Film film = filmDbStorage.getFilmById(1);
 
         film.setName("Update test film");
@@ -85,10 +80,12 @@ public class FilmDbStorageTest {
         assertEquals("Update test film", updateFilm.getName());
         assertEquals(50, updateFilm.getDuration());
         assertEquals(5, updateFilm.getRate());
+
     }
 
     @Test
     void getMostPopular() {
+
         Film film2 = new Film();
         film2.setName("new film");
         film2.setReleaseDate(LocalDate.of(2022, 10, 15));
@@ -103,6 +100,15 @@ public class FilmDbStorageTest {
 
         assertNotNull(popular);
         assertEquals(2, popular.size());
-        assertEquals("new film", popular.get(1).getName());
+        assertEquals("new film", popular.get(0).getName());
+    }
+
+    @Test
+    void getFilms() {
+
+        List<Film> films = filmDbStorage.getFilms();
+
+        assertNotNull(films);
+        assertEquals(2, films.size());
     }
 }
