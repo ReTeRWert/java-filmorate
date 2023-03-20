@@ -43,13 +43,9 @@ public class LikeDbStorageTest {
 
         filmDbStorage.addFilm(film);
 
-        User user = new User();
-        user.setEmail("mail@mail.ru");
-        user.setLogin("usertest");
-        user.setName("Name user test");
-        user.setBirthday(LocalDate.of(1957, 6, 14));
 
-        userDbStorage.addUser(user);
+
+
     }
 
     private void removeFriendAndUser() {

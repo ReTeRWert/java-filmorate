@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.dbstorage;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -65,7 +63,7 @@ public class UserDbStorageTest {
 
     @Test
     void updateUser() {
-
+        addUser();
         User user = userDbStorage.getUserById(1);
         user.setName("new name");
         user.setEmail("newmail@mail.ru");
