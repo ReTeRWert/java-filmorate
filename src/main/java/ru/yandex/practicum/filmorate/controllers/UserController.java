@@ -6,14 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidateException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.user.UserService;
+import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.utilites.UserValidator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/users")
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
@@ -21,29 +21,8 @@ public class UserController {
     private final UserValidator validator;
     private final UserService service;
 
-    @GetMapping("/users")
-    public List<User> getUsers() {
-        return service.getUsers();
-    }
 
-    @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable(value = "id") Integer userId) {
-        return service.getUserById(userId);
-    }
-
-    @GetMapping("/users/{id}/friends")
-    public List<User> getFriends(@PathVariable Integer id) {
-        return service.getFriends(id);
-    }
-
-    @GetMapping("/users/{id}/friends/common/{otherId}")
-    public List<User> getGeneralFriends(@PathVariable(value = "id") Integer verifiableUser,
-                                        @PathVariable(value = "otherId") Integer comparedUser) {
-
-        return new ArrayList<>(service.getListGeneralFriends(verifiableUser, comparedUser));
-    }
-
-    @PostMapping("/users")
+    @PostMapping
     public User addUser(@RequestBody User user) throws ValidateException {
         validator.validateUser(user);
         service.addUser(user);
@@ -51,7 +30,7 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/users")
+    @PutMapping
     public User updateUser(@RequestBody User user) throws ValidateException {
         validator.validateUser(user);
         service.updateUser(user);
@@ -59,12 +38,36 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/users/{id}/friends/{friendId}")
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable(value = "id") Integer userId) {
+        return service.getUserById(userId);
+    }
+
+    @GetMapping
+    public List<User> getUsers() {
+        return service.getUsers();
+    }
+
+
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable Integer id) {
+        return service.getFriendsUser(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable(value = "id") Integer verifiableUser,
+                                       @PathVariable(value = "otherId") Integer comparedUser) {
+
+        return new ArrayList<>(service.getListCommonFriends(verifiableUser, comparedUser));
+    }
+
+
+    @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable(value = "id") Integer userId, @PathVariable Integer friendId) {
         service.addFriend(userId, friendId);
     }
 
-    @DeleteMapping("/users/{id}/friends/{friendId}")
+    @DeleteMapping("/{id}/friends/{friendId}")
     public void removeFriend(@PathVariable(value = "id") Integer userId,
                              @PathVariable Integer friendId) {
 
