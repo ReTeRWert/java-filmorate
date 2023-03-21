@@ -43,9 +43,6 @@ public class LikeDbStorageTest {
 
         filmDbStorage.addFilm(film);
 
-
-
-
     }
 
     private void removeFriendAndUser() {

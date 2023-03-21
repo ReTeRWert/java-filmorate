@@ -68,7 +68,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> getFilms() {
         String sql = "SELECT * " +
-                "FROM films AS f,  " +
+                "FROM films AS f " +
                 "JOIN rating_mpa AS r ON f.rating_id = r.rating_id ";
 
         List<Film> films = jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs));
