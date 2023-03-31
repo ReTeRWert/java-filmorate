@@ -15,23 +15,37 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
 
     @Override
-    public Collection<User> getUsers() throws RuntimeException {
+    public Collection<User> getAll() throws RuntimeException {
         return users.values();
     }
 
+
     @Override
-    public User get(long id) throws RuntimeException {
+    public User get(Long id) throws RuntimeException {
         return users.get(id);
     }
 
     @Override
-    public User add(User user) throws RuntimeException {
+    public User create(User user) throws RuntimeException {
+        Long generatedId = User.setIdCounter();
+        user.setId(generatedId);
         users.put(user.getId(), user);
         return user;
     }
 
     @Override
-    public void delete(long id) throws RuntimeException {
+    public void remove(Long id) throws RuntimeException {
         users.remove(id);
+    }
+
+    @Override
+    public User update(User user) {
+        users.put(user.getId(), user);
+        return user;
+    }
+
+    @Override
+    public void deleteAll() {
+        users.clear();
     }
 }

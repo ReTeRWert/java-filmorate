@@ -12,14 +12,14 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Data
 @Builder(toBuilder = true)
 public class User {
     private final static Logger log = LoggerFactory.getLogger(User.class);
-    //@Builder.Default
-    private final HashMap<Long, Boolean> friends = new HashMap<>();
+    private Set<Long> friends;
     private Long id;
     @Email(message = "*@*.*")
     @NotBlank(message = "Can not be blank")
@@ -37,5 +37,15 @@ public class User {
         } else {
             return name;
         }
+    }
+
+    private static AtomicLong counter = new AtomicLong(0);
+
+    public static void setCounter(AtomicLong counter) {
+        User.counter = counter;
+    }
+
+    public static Long setIdCounter() {
+        return counter.incrementAndGet();
     }
 }

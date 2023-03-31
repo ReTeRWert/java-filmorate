@@ -25,49 +25,62 @@ public class UserController {
 
     @GetMapping
     public Collection<User> getUsers() {
-        return userService.getUsers();
+        log.debug("Входящий запрос на получение списка всех пользователей");
+        return userService.getAll();
     }
 
 
     @PostMapping
     public User create(@RequestBody @Validated User user) throws RuntimeException {
+        log.debug("Входящий запрос на создание пользователя");
+        log.debug(user.toString());
         return userService.create(user);
     }
 
     @PutMapping
     public User update(@RequestBody @Validated User user) throws RuntimeException {
+        log.debug("Входящий запрос на редактирование пользователя");
+        log.debug(user.toString());
         return userService.update(user);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public User addFriend(@PathVariable Long id, @PathVariable Long friendId) throws RuntimeException {
-        log.debug("Попытка добавить друга{}", id);
+        log.debug("Входящий запрос на добавление в друзья пользователя с id = {} пользователю c id = {}",
+                friendId, id);
         return userService.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) throws RuntimeException {
+        log.debug("Входящий запрос на удаление из друзей пользователя с id = {} у пользователя c id = {}",
+                friendId, id);
         userService.deleteFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) throws RuntimeException {
+        log.debug("Входящий запрос на удаление пользователя с id = {}", id);
         userService.delete(id);
     }
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) throws RuntimeException {
-        return userService.getUser(id);
+        log.debug("Входящий запрос на получение информации по пользователю с id = {}", id);
+        return userService.get(id);
     }
 
     @GetMapping("/{id}/friends")
     public Collection<User> allFriendsUser(@PathVariable Long id) throws RuntimeException {
+        log.debug("Входящий запрос на получения списка друзей для пользователя с id = {}", id);
         return userService.getFriendsUser(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
     public Collection<User> getCommonFriends(@PathVariable Long id, @PathVariable Long otherId)
             throws RuntimeException {
+        log.debug("Входящий запрос на получения списка общих друзей для пользователей с id = {} и пользователя "
+                + "с id = {}", id, otherId);
         return userService.getCommonFriends(id, otherId);
     }
 

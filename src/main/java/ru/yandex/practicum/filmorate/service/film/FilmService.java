@@ -4,11 +4,15 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.filmlikes.FilmLikesStorage;
+import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.genrefilm.FilmGenreStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
@@ -17,24 +21,37 @@ import java.util.stream.Collectors;
 
 @Data
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class FilmService {
 
-    @Autowired
     private final FilmStorage filmStorage;
-    @Autowired
     private final UserStorage userStorage;
-    private long lastId = 0L;
+    private final FilmLikesStorage filmLikesStorage;
+    private final FilmGenreStorage filmGenreStorage;
+    private final GenreStorage genreStorage;
+
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage,
+                       @Qualifier("filmLikesDbStorage") FilmLikesStorage filmLikesStorage,
+                       FilmGenreStorage filmGenreStorage, GenreStorage genreStorage) {
+        this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
+        this.filmLikesStorage = filmLikesStorage;
+        this.filmGenreStorage = filmGenreStorage;
+        this.genreStorage = genreStorage;
+    }
+
+    public FilmStorage getFilmStorage() {
+        return filmStorage;
+    }
 
     public Film create(Film film) {
-        film.setId(++lastId);
-        return filmStorage.add(film);
+        return filmStorage.create(film);
     }
 
     public Film update(Film film) {
         if (filmStorage.getById(film.getId()) != null) {
-            return filmStorage.add(film);
+            return filmStorage.update(film);
         } else {
             throw new NotFoundException("Данные не найдены");
         }
@@ -42,14 +59,14 @@ public class FilmService {
 
     public void delete(Long id) {
         if (filmStorage.getById(id) != null) {
-            filmStorage.delete(id);
+            filmStorage.remove(id);
         } else {
             throw new NotFoundException("Данные не найдены");
         }
     }
 
     public Collection<Film> getAllFilms() {
-        return filmStorage.getFilms();
+        return filmStorage.getAll();
     }
 
     public Film getById(long id) {
@@ -88,7 +105,7 @@ public class FilmService {
             if (count < 0) {
                 count = 10;
             }
-            return filmStorage.getFilms().stream().sorted(((o1, o2) -> (o2.getLikes().size() - o1.getLikes().size()))).limit(count).collect(Collectors.toList());
+            return filmStorage.getAll().stream().sorted(((o1, o2) -> (o2.getLikes().size() - o1.getLikes().size()))).limit(count).collect(Collectors.toList());
         } catch (RuntimeException e) {
             throw new RuntimeException("Ошибка сервера");
         }

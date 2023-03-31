@@ -14,17 +14,25 @@ import java.util.Map;
 public class InMemoryFilmStorage implements FilmStorage {
     private final Map<Long, Film> films = new HashMap<>();
 
-
     @Override
-    public Film add(Film film) {
-        films.put(film.getId(), film);
+    public Film create(Film film) {
+        Long generatedId = Film.setIdCounter();
+        film.setId(generatedId);
+        films.put(generatedId, film);
         return film;
     }
 
     @Override
-    public void delete(Long id) {
+    public Film update(Film film) {
+        return null;
+    }
+
+    @Override
+    public void remove(Long id) {
         films.remove(id);
     }
+
+
 
     @Override
     public Film getById(Long id) {
@@ -32,7 +40,12 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public Collection<Film> getFilms() {
+    public Collection<Film> getAll() {
         return films.values();
+    }
+
+    @Override
+    public void deleteAll() {
+
     }
 }
