@@ -1,8 +1,4 @@
 #Filmorate
-Generated using [DbSchema](https://dbschema.com)
-
-
-
 
 ### Layout
 ![img](./Layout.svg)
