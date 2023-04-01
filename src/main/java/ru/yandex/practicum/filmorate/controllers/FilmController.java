@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
@@ -28,20 +29,20 @@ public class FilmController {
     @GetMapping
     public Collection<Film> getFilms() throws NotFoundException {
         log.debug("Входящий запрос на получение списка всех фильмов");
-        return filmService.getAllFilms();
+        return filmService.getFilms();
     }
 
     @GetMapping("/{id}")
     public Film getFilm(@PathVariable Long id) throws NotFoundException {
         log.debug("Входящий запрос на получение фильма по id = {}", id);
-        return filmService.getById(id);
+        return filmService.findFilmById(id);
     }
 
 
     @GetMapping("/popular")
     public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count) {
         log.debug("Входящий запрос на получение первых {} популярных фильмов", count);
-        return filmService.getPopularFilm(count);
+        return filmService.getPopular(count);
     }
 
     @PostMapping
@@ -58,22 +59,22 @@ public class FilmController {
         return filmService.update(film);
     }
 
-    @DeleteMapping("/{id}")
+    /*@DeleteMapping("/{id}")
     public void deleteFilm(@PathVariable Long id) throws NotFoundException {
         log.debug("Входящий запрос на удаление фильма с id = {}", id);
         filmService.delete(id);
-    }
+    }*/
 
     @PutMapping("/{id}/like/{userId}")
-    public Film addLike(@PathVariable Long id, @PathVariable Long userId) throws NotFoundException {
+    public void addLike(@PathVariable Long id, @PathVariable Long userId) throws NotFoundException {
         log.debug("Входящий запрос на проставление лайка пользователем с id = {} для фильма с id = {}", userId, id);
-        return filmService.addLike(id, userId);
+        filmService.addFilmLike(id, userId);
     }
 
     @DeleteMapping("{id}/like/{userId}")
-    public Film deleteLike(@PathVariable Long id, @PathVariable Long userId) throws NotFoundException {
+    public void deleteLike(@PathVariable Long id, @PathVariable Long userId) throws NotFoundException {
         log.debug("Входящий запрос на удаление лайка пользователем с id = {} для фильма с id = {}", userId, id);
-        return filmService.deleteLike(id, userId);
+         filmService.removeFilmLike(id, userId);
     }
 
     @ExceptionHandler

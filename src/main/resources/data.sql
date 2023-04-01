@@ -1,12 +1,12 @@
-MERGE INTO rating_mpaa (RATING_MPAA_ID, NAME) VALUES (1, 'G');
-MERGE INTO rating_mpaa (RATING_MPAA_ID, NAME) VALUES (2, 'PG');
-MERGE INTO rating_mpaa (RATING_MPAA_ID, NAME) VALUES (3, 'PG-13');
-MERGE INTO rating_mpaa (RATING_MPAA_ID, NAME) VALUES (4, 'R');
-MERGE INTO rating_mpaa (RATING_MPAA_ID, NAME) VALUES (5, 'NC-17');
+INSERT INTO Genre (name) VALUES ('Комедия');
+INSERT INTO Genre (name) VALUES ('Драма');
+INSERT INTO Genre (name) VALUES ('Мультфильм');
+INSERT INTO Genre (name) VALUES ('Триллер');
+INSERT INTO Genre (name) VALUES ('Документальный');
+INSERT INTO Genre (name) VALUES ('Боевик');
 
-MERGE INTO genre (GENRE_ID, NAME) VALUES (1, 'Комедия');
-MERGE INTO genre (GENRE_ID, NAME) VALUES (2, 'Драма');
-MERGE INTO genre (GENRE_ID, NAME) VALUES (3, 'Мультфильм');
-MERGE INTO genre (GENRE_ID, NAME) VALUES (4, 'Триллер');
-MERGE INTO genre (GENRE_ID, NAME) VALUES (5, 'Документальное');
-MERGE INTO genre (GENRE_ID, NAME) VALUES (6, 'Боевик');
+INSERT INTO Age_rating (name) VALUES ('G');
+INSERT INTO Age_rating (name) VALUES ('PG');
+INSERT INTO Age_rating (name) VALUES ('PG-13');
+INSERT INTO Age_rating (name) VALUES ('R');
+INSERT INTO Age_rating (name) VALUES ('NC-17');

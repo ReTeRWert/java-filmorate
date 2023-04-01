@@ -1,51 +1,78 @@
+/*
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+
 
 @Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
+    private static long id = 0;
+    private final HashMap<Long, User> users = new HashMap<>();
 
-    private final Map<Long, User> users = new HashMap<>();
-
-    @Override
-    public Collection<User> getAll() throws RuntimeException {
-        return users.values();
+    public List<User> getUsers() {
+        return new ArrayList<>(users.values());
     }
-
-
     @Override
-    public User get(Long id) throws RuntimeException {
+    public User create(User user) {
+        if (!users.containsKey(user.getId())) {
+            id++;
+            user.setId(id);
+        }
+        users.put(user.getId(), user);
+        return user;
+    }
+    @Override
+    public User update(User user) {
+        if (!users.containsKey(user.getId())) {
+            throw new NotFoundException("Пользователь не найден.");
+        }
+        users.put(user.getId(), user);
+        return user;
+    }
+    @Override
+    public User findUserById(long id) {
+        if (!users.containsKey(id)) {
+            throw new NotFoundException("Пользователь не найден.");
+        }
         return users.get(id);
     }
 
     @Override
-    public User create(User user) throws RuntimeException {
-        Long generatedId = User.setIdCounter();
-        user.setId(generatedId);
-        users.put(user.getId(), user);
-        return user;
+    public List<User> getFriends(long id) {
+        return null;
     }
 
     @Override
-    public void remove(Long id) throws RuntimeException {
-        users.remove(id);
+    public List<User> getCommonFriends(long id, long otherId) {
+        return null;
     }
 
     @Override
-    public User update(User user) {
-        users.put(user.getId(), user);
-        return user;
+    public void addFriend(long id, long friendId) {
+
     }
 
     @Override
-    public void deleteAll() {
-        users.clear();
+    public void removeFriend(long id, long friendId) {
+
+    }
+
+    @Override
+    public void addFilmsLike(long filmId, long userId) {
+
+    }
+
+    @Override
+    public void removeFilmLike(long filmId, long userId) {
+
     }
 }
+*/

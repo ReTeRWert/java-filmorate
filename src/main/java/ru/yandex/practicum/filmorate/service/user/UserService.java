@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.friendship.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
@@ -19,16 +18,13 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserStorage userStorage;
-    private final FriendshipStorage friendshipStorage;
     private final FilmStorage filmStorage;
 
 
     @Autowired
     public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
-                       @Qualifier("friendshipDbStorage") FriendshipStorage friendshipStorage,
                        @Qualifier("filmDbStorage") FilmStorage filmStorage) {
         this.userStorage = userStorage;
-        this.friendshipStorage = friendshipStorage;
         this.filmStorage = filmStorage;
     }
 
@@ -38,51 +34,51 @@ public class UserService {
     }
 
     public User update(User user) {
-        if (userStorage.get(user.getId()) != null) {
+        if (userStorage.findUserById(user.getId()) != null) {
             return userStorage.update(user);
         } else {
             throw new NotFoundException("Пользователя с таким ID не существует");
         }
     }
 
-    public void delete(Long id) throws NotFoundException {
-        if (userStorage.get(id) != null) {
+    /*public void delete(Long id) throws NotFoundException {
+        if (userStorage.findUserById(id) != null) {
             userStorage.remove(id);
         } else {
             throw new NotFoundException("Пользователя с таким ID не существует");
         }
-    }
+    }*/
 
     public User addFriend(Long userId, Long friendId) throws NotFoundException {
-        final User user = userStorage.get(userId);
-        final User friend = userStorage.get(friendId);
+        final User user = userStorage.findUserById(userId.longValue());
+        final User friend = userStorage.findUserById(friendId.longValue());
 
         if (user == null) {
             throw new NotFoundException("User with id = " + userId + " not found");
         } else if (friend == null) {
             throw new NotFoundException("User with id = " + friendId + " not found");
         } else {
-            friendshipStorage.addFriend(userId, friendId);
+            userStorage.addFriend(userId, friendId);
             return userStorage.update(user);
         }
     }
 
     public User deleteFriend(Long userId, Long friendId) throws NotFoundException {
-        User user = userStorage.get(userId);
-        User friend = userStorage.get(friendId);
+        User user = userStorage.findUserById(userId.longValue());
+        User friend = userStorage.findUserById(friendId.longValue());
 
         if (user == null) {
             throw new NotFoundException("User with id = " + userId + " not found");
         } else if (friend == null) {
             throw new NotFoundException("User with id = " + friendId + " not found");
         } else {
-            friendshipStorage.deleteFromFriends(userId, friendId);
+            userStorage.removeFriend(userId, friendId);
             return userStorage.update(user);
         }
     }
 
     public User get(Long userId) throws NotFoundException {
-        final User user = userStorage.get(userId);
+        final User user = userStorage.findUserById(userId);
         if (user == null) {
             throw new NotFoundException("User with id = " + userId + " not found");
         }
@@ -90,30 +86,29 @@ public class UserService {
     }
 
     public Collection<User> getAll() {
-        return userStorage.getAll();
+        return userStorage.getUsers();
     }
 
     public List<User> getFriendsUser(Long userId) throws NotFoundException {
-        User user = userStorage.get(userId);
+        User user = userStorage.findUserById(userId.longValue());
         if (user == null) {
             throw new NotFoundException("User with id = " + userId + " not found");
         } else {
-            List<User> friendsList = friendshipStorage.getFriendsForUser(userId);
+            List<User> friendsList = userStorage.getFriends(userId.longValue());
             return friendsList;
         }
     }
 
     public List<User> getCommonFriends(Long userId, Long otherUserId) throws NotFoundException {
-        User user = userStorage.get(userId);
-        User otherUser = userStorage.get(otherUserId);
+        User user = userStorage.findUserById(userId.longValue());
+        User otherUser = userStorage.findUserById(otherUserId.longValue());
 
         if (user == null) {
             throw new NotFoundException("User with id = " + userId + " not found");
         } else if (otherUser == null) {
             throw new NotFoundException("User with id = " + otherUserId + " not found");
         } else {
-            return friendshipStorage.getCommonFriends(userId, otherUserId);
+            return userStorage.getCommonFriends(userId, otherUserId);
         }
     }
-
 }
