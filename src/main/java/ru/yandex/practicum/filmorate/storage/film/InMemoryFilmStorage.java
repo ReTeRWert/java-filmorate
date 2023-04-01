@@ -1,4 +1,4 @@
-/*
+
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,4 +43,4 @@ public class InMemoryFilmStorage implements FilmStorage {
         return films.get(id);
     }
 }
-*/
+

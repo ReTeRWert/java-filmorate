@@ -20,7 +20,6 @@ public class UserService {
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
 
-
     @Autowired
     public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
                        @Qualifier("filmDbStorage") FilmStorage filmStorage) {
@@ -40,14 +39,6 @@ public class UserService {
             throw new NotFoundException("Пользователя с таким ID не существует");
         }
     }
-
-    /*public void delete(Long id) throws NotFoundException {
-        if (userStorage.findUserById(id) != null) {
-            userStorage.remove(id);
-        } else {
-            throw new NotFoundException("Пользователя с таким ID не существует");
-        }
-    }*/
 
     public User addFriend(Long userId, Long friendId) throws NotFoundException {
         final User user = userStorage.findUserById(userId.longValue());

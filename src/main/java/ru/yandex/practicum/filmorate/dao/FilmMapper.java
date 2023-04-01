@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FilmMapper implements RowMapper<Film> {
-    private final MPAStorage mpaStorage;
+    private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
 
-    public FilmMapper(MPAStorage mpaStorage, GenreStorage genreStorage) {
+    public FilmMapper(MpaStorage mpaStorage, GenreStorage genreStorage) {
         this.mpaStorage = mpaStorage;
         this.genreStorage = genreStorage;
     }

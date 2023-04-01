@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.controllers;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.dao.MPAStorage;
+import ru.yandex.practicum.filmorate.dao.MpaStorage;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.MPA;
@@ -13,11 +13,11 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/mpa")
-public class MPAController {
+public class MpaController {
 
-    private final MPAStorage mpaStorage;
+    private final MpaStorage mpaStorage;
 
-    public MPAController(MPAStorage mpaStorage) {
+    public MpaController(MpaStorage mpaStorage) {
         this.mpaStorage = mpaStorage;
     }
 

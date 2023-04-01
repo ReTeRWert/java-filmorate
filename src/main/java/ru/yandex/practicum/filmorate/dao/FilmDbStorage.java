@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 @Qualifier
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final MPAStorage MPAStorage;
+    private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
 
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, MPAStorage mpaStorage, GenreStorage genreStorage) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaStorage mpaStorage, GenreStorage genreStorage) {
         this.jdbcTemplate = jdbcTemplate;
-        this.MPAStorage = mpaStorage;
+        this.mpaStorage = mpaStorage;
         this.genreStorage = genreStorage;
     }
 
@@ -59,7 +59,7 @@ public class FilmDbStorage implements FilmStorage {
                     .releaseDate(Objects.requireNonNull(rs.getDate("release_date")).toLocalDate())
                     .duration(rs.getLong("duration"))
                     .rate(rs.getInt("rate"))
-                    .mpa(MPAStorage.findMPAById(rs.getInt("age_id")))
+                    .mpa(mpaStorage.findMPAById(rs.getInt("age_id")))
                     .build();
             films.add(film);
         }
@@ -178,7 +178,7 @@ public class FilmDbStorage implements FilmStorage {
                 .duration(rs.getLong("duration"))
                 .rate(rs.getInt("rate"))
                 .genres(genres)
-                .mpa(MPAStorage.findMPAById(rs.getInt("age_id")))
+                .mpa(mpaStorage.findMPAById(rs.getInt("age_id")))
                 .build();
     }
 }

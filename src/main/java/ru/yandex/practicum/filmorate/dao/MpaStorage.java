@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MPAStorage {
+public class MpaStorage {
     public final JdbcTemplate jdbcTemplate;
     private final List<MPA> mpaList = new ArrayList<>();
 
     @Autowired
-    public MPAStorage(JdbcTemplate jdbcTemplate) {
+    public MpaStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         String sql = "SELECT * FROM Age_rating";
         mpaList.addAll(jdbcTemplate.query(sql, (rs, rowNum) -> new MPA(rs.getInt("age_id"),
