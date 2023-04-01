@@ -67,11 +67,18 @@ public class UserDbStorage implements UserStorage {
         String sql = "SELECT * FROM Users WHERE user_id = ?";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, id);
         rs.next();
+
+        Set<Long> idList = new HashSet<>();
+        for (User friend : getFriends(id)) {
+            idList.add(friend.getId());
+        }
+
         return User.builder()
                 .id(rs.getLong("user_id"))
                 .email(rs.getString("email"))
                 .login(rs.getString("login"))
                 .name(rs.getString("name"))
+                .friends(idList)
                 .birthday(Objects.requireNonNull(rs.getDate("birthday")).toLocalDate())
                 .build();
     }

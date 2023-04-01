@@ -142,6 +142,7 @@ public class FilmDbStorage implements FilmStorage {
                 film.setGenres(updatedGenres);
             }
         }
+
         return film;
     }
 

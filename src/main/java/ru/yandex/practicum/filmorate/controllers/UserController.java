@@ -33,15 +33,13 @@ public class UserController {
 
     @PostMapping
     public User create(@RequestBody @Validated User user) throws RuntimeException {
-        log.debug("Входящий запрос на создание пользователя");
-        log.debug(user.toString());
+        log.debug("Входящий запрос на создание пользователя {}", user);
         return userService.create(user);
     }
 
     @PutMapping
     public User update(@RequestBody @Validated User user) throws RuntimeException {
-        log.debug("Входящий запрос на редактирование пользователя");
-        log.debug(user.toString());
+        log.debug("Входящий запрос на редактирование пользователя{}", user);
         return userService.update(user);
     }
 
