@@ -8,6 +8,9 @@ Generated using [DbSchema](https://dbschema.com)
 ![img](./Layout.svg)
 
 
+## Tables
+
+1. [public.Age_rating](#table-public.age\_rating) 2. [public.Film](#table-public.film) 3. [public.Film_like](#table-public.film\_like) 4. [public.FilmGenre](#table-public.filmgenre) 5. [public.Friendship](#table-public.friendship) 6. [public.Genre](#table-public.genre) 7. [public.Users](#table-public.users)
 
 ### Table public.Age_rating
 | | | |
