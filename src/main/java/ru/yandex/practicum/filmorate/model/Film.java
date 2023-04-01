@@ -2,8 +2,6 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.yandex.practicum.filmorate.validator.DateFilm;
 
 import javax.validation.constraints.NotBlank;
@@ -17,7 +15,6 @@ import static ru.yandex.practicum.filmorate.model.Constants.MAX_LENGTH_DESCRIPTI
 @Data
 @Builder(toBuilder = true)
 public class Film {
-    private final Logger log = LoggerFactory.getLogger(Film.class);
     private int rate;
     private Long id;
     @NotBlank(message = "Название не может быть пустым;")

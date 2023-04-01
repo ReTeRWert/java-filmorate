@@ -4,8 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.yandex.practicum.filmorate.validator.Login;
 
 import javax.validation.constraints.Email;
@@ -19,7 +17,6 @@ import java.util.Set;
 @Builder(toBuilder = true)
 public class User {
     final Set<Long> filmsLike = new HashSet<>();
-    private final Logger log = LoggerFactory.getLogger(User.class);
     private Set<Long> friends;
     private Long id;
     @Email(message = "*@*.*")
