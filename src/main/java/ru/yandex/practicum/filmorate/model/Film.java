@@ -17,9 +17,8 @@ import static ru.yandex.practicum.filmorate.model.Constants.MAX_LENGTH_DESCRIPTI
 @Data
 @Builder(toBuilder = true)
 public class Film {
-    private final static Logger log = LoggerFactory.getLogger(Film.class);
-    int rate;
-    //@Setter(AccessLevel.NONE)
+    private final Logger log = LoggerFactory.getLogger(Film.class);
+    private int rate;
     private Long id;
     @NotBlank(message = "Название не может быть пустым;")
     private String name;
