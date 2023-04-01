@@ -74,7 +74,7 @@ public class FilmController {
     @DeleteMapping("{id}/like/{userId}")
     public void deleteLike(@PathVariable Long id, @PathVariable Long userId) throws NotFoundException {
         log.debug("Входящий запрос на удаление лайка пользователем с id = {} для фильма с id = {}", userId, id);
-         filmService.removeFilmLike(id, userId);
+        filmService.removeFilmLike(id, userId);
     }
 
     @ExceptionHandler

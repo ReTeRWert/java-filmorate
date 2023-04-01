@@ -20,6 +20,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @Builder(toBuilder = true)
 public class User {
     private final static Logger log = LoggerFactory.getLogger(User.class);
+    private static AtomicLong counter = new AtomicLong(0);
+    final Set<Long> filmsLike = new HashSet<>();
     private Set<Long> friends;
     private Long id;
     @Email(message = "*@*.*")
@@ -32,7 +34,13 @@ public class User {
     @PastOrPresent(message = "День рождения не может быть в будущем")
     private LocalDate birthday;
 
-    final Set<Long> filmsLike = new HashSet<>();
+    public static void setCounter(AtomicLong counter) {
+        User.counter = counter;
+    }
+
+    public static Long setIdCounter() {
+        return counter.incrementAndGet();
+    }
 
     public String getName() {
         if (name == null || name.isBlank()) {
@@ -40,15 +48,5 @@ public class User {
         } else {
             return name;
         }
-    }
-
-    private static AtomicLong counter = new AtomicLong(0);
-
-    public static void setCounter(AtomicLong counter) {
-        User.counter = counter;
-    }
-
-    public static Long setIdCounter() {
-        return counter.incrementAndGet();
     }
 }

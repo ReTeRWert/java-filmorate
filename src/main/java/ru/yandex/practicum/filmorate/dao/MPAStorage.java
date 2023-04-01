@@ -10,8 +10,8 @@ import java.util.List;
 
 @Service
 public class MPAStorage {
-    private final List<MPA> mpaList = new ArrayList<>();
     public final JdbcTemplate jdbcTemplate;
+    private final List<MPA> mpaList = new ArrayList<>();
 
     @Autowired
     public MPAStorage(JdbcTemplate jdbcTemplate) {

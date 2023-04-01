@@ -5,15 +5,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Genre;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class GenreStorage {
 
-    private final List<Genre> genreList = new ArrayList<>();
     public final JdbcTemplate jdbcTemplate;
+    private final List<Genre> genreList = new ArrayList<>();
 
     @Autowired
     public GenreStorage(JdbcTemplate jdbcTemplate) {

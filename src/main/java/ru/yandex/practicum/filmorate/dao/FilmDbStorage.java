@@ -7,12 +7,10 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
-
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -65,7 +63,7 @@ public class FilmDbStorage implements FilmStorage {
                     .build();
             films.add(film);
         }
-        for (Film film: films) {
+        for (Film film : films) {
             film.setGenres(genreMap.get(film.getId()));
         }
         return films;

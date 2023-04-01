@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -51,14 +50,14 @@ public class FilmService {
     }
 
     public void addFilmLike(long filmId, long userId) {
-        userStorage.addFilmsLike(filmId,userId);
+        userStorage.addFilmsLike(filmId, userId);
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() + 1);
         userStorage.findUserById(userId).getFilmsLike().add(filmId);
     }
 
     public void removeFilmLike(long filmId, long userId) {
-        userStorage.removeFilmLike(filmId,userId);
+        userStorage.removeFilmLike(filmId, userId);
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() - 1);
         userStorage.findUserById(userId).getFilmsLike().remove(filmId);
