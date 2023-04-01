@@ -1,4 +1,3 @@
-
 package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +19,7 @@ public class InMemoryUserStorage implements UserStorage {
     public List<User> getUsers() {
         return new ArrayList<>(users.values());
     }
+
     @Override
     public User create(User user) {
         if (!users.containsKey(user.getId())) {
@@ -29,6 +29,7 @@ public class InMemoryUserStorage implements UserStorage {
         users.put(user.getId(), user);
         return user;
     }
+
     @Override
     public User update(User user) {
         if (!users.containsKey(user.getId())) {
@@ -37,6 +38,7 @@ public class InMemoryUserStorage implements UserStorage {
         users.put(user.getId(), user);
         return user;
     }
+
     @Override
     public User findUserById(long id) {
         if (!users.containsKey(id)) {

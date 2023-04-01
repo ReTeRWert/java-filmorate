@@ -18,8 +18,8 @@ import java.util.Set;
 @Data
 @Builder(toBuilder = true)
 public class User {
-    private final Logger log = LoggerFactory.getLogger(User.class);
     final Set<Long> filmsLike = new HashSet<>();
+    private final Logger log = LoggerFactory.getLogger(User.class);
     private Set<Long> friends;
     private Long id;
     @Email(message = "*@*.*")
