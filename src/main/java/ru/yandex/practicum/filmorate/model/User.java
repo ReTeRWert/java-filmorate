@@ -4,22 +4,20 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.yandex.practicum.filmorate.validator.Login;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder(toBuilder = true)
 public class User {
-    private final static Logger log = LoggerFactory.getLogger(User.class);
-    //@Builder.Default
-    private final HashMap<Long, Boolean> friends = new HashMap<>();
+    final Set<Long> filmsLike = new HashSet<>();
+    private Set<Long> friends;
     private Long id;
     @Email(message = "*@*.*")
     @NotBlank(message = "Can not be blank")

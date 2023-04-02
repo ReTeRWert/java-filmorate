@@ -11,4 +11,9 @@ public class Genre {
     @NotNull
     private int id;
     private String name;
+
+    public Genre(int id, String genre) {
+        this.id = id;
+        this.name = genre;
+    }
 }
