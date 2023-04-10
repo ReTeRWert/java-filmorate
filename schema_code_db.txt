@@ -1,0 +1,107 @@
+Table films {
+film_id int
+film_name varchar
+film_description varchar
+release_date date
+duration int
+rating_id int [ref: - rating_mpa.rating_id]
+rate int
+
+Indexes {
+  (film_id) [pk]
+}
+}
+
+Table film_genres {
+  film_id int [ref: > films.film_id]
+  genre_id int [ref: - genres.genre_id]
+
+  Indexes {
+    (film_id, genre_id) [pk]
+  }
+}
+
+Table genres {
+  genre_id int
+  genre_name varchar
+
+  Indexes {
+    (genre_id) [pk]
+  }
+}
+
+Table rating_mpa {
+  rating_id int
+  rating_name varchar
+
+  Indexes {
+    (rating_id) [pk]
+  }
+}
+
+Table users {
+  user_id int
+  email varchar
+  login varchar
+  user_name varchar
+  birthday date
+
+  Indexes {
+    (user_id) [pk]
+  }
+}
+
+Table friends {
+  user_id int [ref: - users.user_id]
+  friend_id int [ref: - users.user_id]
+
+  Indexes {
+    (user_id, friend_id) [pk]
+  }
+}
+
+Table likes {
+  user_id int [ref: > users.user_id]
+  film_id int [ref: > films.film_id]
+
+  Indexes {
+    (user_id, film_id) [pk]
+  }
+}
+
+Table directors {
+  director_id int
+  director_name varchar
+
+  Indexes {
+    (director_id) [pk]
+  }
+}
+
+Table director_films {
+  director_id int [ref: - directors.director_id]
+  film_id int [ref: - films.film_id]
+
+  Indexes {
+    (director_id, film_id) [pk]
+  }
+}
+
+Table reviews {
+review_id int
+content varchar
+isPositive boolean
+user_id int
+film_id int
+useful int
+
+Indexes {
+  (review_id) [pk]
+}
+}
+
+Table reviews_like {
+  review_id int [ref: - reviews.review_id]
+  user_id int [ref: - users.user_id]
+  like boolean
+}

@@ -56,3 +56,4 @@ CREATE TABLE IF NOT EXISTS friends (
     friend_id       int REFERENCES users(user_id),
     PRIMARY KEY(user_id, friend_id)
 );
+

@@ -6,14 +6,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static ru.yandex.practicum.filmorate.storage.db.FilmDbStorage.makeFilm;
 
 @Qualifier
 @Component
@@ -86,5 +90,15 @@ public class UserDbStorage implements UserStorage {
         userParameters.put("birthday", user.getBirthday());
 
         return userParameters;
+    }
+
+    public List<Film> getCommonFilms(Integer userId, Integer friendId) {
+        String sql = "SELECT * " +
+                "FROM films " +
+                "WHERE film_id = (SELECT film_id " +
+                "       FROM likes " +
+                "       WHERE u.user_id =? AND f.user_id =?) " +
+                "ORDER BY rate";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeFilm(rs), userId, friendId);
     }
 }

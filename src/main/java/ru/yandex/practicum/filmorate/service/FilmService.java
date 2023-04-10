@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.db.DirectorDbStorage;
 import ru.yandex.practicum.filmorate.storage.db.FilmDbStorage;
 import ru.yandex.practicum.filmorate.storage.db.LikeDbStorage;
 import ru.yandex.practicum.filmorate.storage.db.UserDbStorage;
@@ -18,6 +19,7 @@ public class FilmService {
     private final FilmDbStorage filmDbStorage;
     private final UserDbStorage userDbStorage;
     private final LikeDbStorage likeDbStorage;
+    private final DirectorDbStorage directorDbStorage;
 
 
     public void addFilm(Film film) {
@@ -36,7 +38,6 @@ public class FilmService {
 
     public Film getFilmById(Integer filmId) {
         checkFilm(filmId);
-
         return filmDbStorage.getFilmById(filmId);
     }
 
@@ -50,7 +51,6 @@ public class FilmService {
 
     public void removeFilmById(Integer filmId) {
         checkFilm(filmId);
-
         filmDbStorage.removeFilm(filmId);
     }
 
@@ -70,6 +70,16 @@ public class FilmService {
         filmDbStorage.updateRate(filmDbStorage.getFilmById(filmId));
     }
 
+    public List<Film> getCommonFilms(Integer userId, Integer friendId) {
+        checkUser(userId);
+        checkUser(friendId);
+
+        return userDbStorage.getCommonFilms(userId, friendId);
+    }
+
+    public List<Film> getDirectorFilms(Integer directorId, String sortBy) {
+       return directorDbStorage.getDirectorFilms(directorId, sortBy);
+    }
     private void checkFilm(Integer filmId) {
         if (filmDbStorage.getFilmById(filmId) == null) {
             throw new NotFoundException("Фильма с id: " + filmId + " не существует.");
@@ -81,4 +91,6 @@ public class FilmService {
             throw new NotFoundException("Пользователя с id: " + userId + " не существует");
         }
     }
+
+
 }

@@ -60,11 +60,6 @@ public class FilmDbStorage implements FilmStorage {
         return film;
     }
 
-    // если честно я не очень представляю как тут одним запросом можно собрать сразу фильм со списком жанров. Структура
-    // такая, что каждому фильму соответствует одно значение. А вот уже жанров может быть несколько, поэтому для них
-    // создана отдельная таблица, и как их совместить в одной вообще непонятно. Сейчас фильмы собираются отдельно, жанры
-    // отдельно, а потом собираются в единый объект.
-
     @Override
     public List<Film> getFilms() {
         String sql = "SELECT * " +
@@ -103,18 +98,6 @@ public class FilmDbStorage implements FilmStorage {
         jdbcTemplate.update(sql, filmId);
     }
 
-    public static Film makeFilm(ResultSet rs) throws SQLException {
-        return new Film(
-                rs.getInt("film_id"),
-                rs.getString("film_name"),
-                rs.getString("film_description"),
-                rs.getDate("release_date").toLocalDate(),
-                rs.getInt("duration"),
-                new Mpa(rs.getInt("rating_id"), rs.getString("rating_name")),
-                rs.getInt(("rate"))
-        );
-    }
-
     public void updateRate(Film film) {
         String sql = "SELECT COUNT(user_id) " +
                 "FROM likes " +
@@ -138,6 +121,18 @@ public class FilmDbStorage implements FilmStorage {
             final Film film = filmById.get(rs.getInt("film_id"));
             film.addGenre(genreDbStorage.makeGenre(rs));
         }, films.stream().map(Film::getId).toArray());
+    }
+
+    public static Film makeFilm(ResultSet rs) throws SQLException {
+        return new Film(
+                rs.getInt("film_id"),
+                rs.getString("film_name"),
+                rs.getString("film_description"),
+                rs.getDate("release_date").toLocalDate(),
+                rs.getInt("duration"),
+                new Mpa(rs.getInt("rating_id"), rs.getString("rating_name")),
+                rs.getInt(("rate"))
+        );
     }
 
     private Map<String, Object> toMap(Film film) {

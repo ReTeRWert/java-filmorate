@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.utilites;
 
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -20,10 +21,12 @@ class FilmValidatorTest extends FilmValidator {
     List<Genre> genres = new ArrayList<>();
     Mpa rating = new Mpa(1, "PG");
 
+    Director director = new Director(1, "John");
+
     @Test
     void validateFilmShouldReturnTrueWhenFilmCorrect() {
         Film film = new Film(1, "film1", "desc",
-                LocalDate.of(2002, 5, 23), 120, rating, 8, likes, genres);
+                LocalDate.of(2002, 5, 23), 120, rating, 8, likes, genres, director);
 
         assertTrue(validator.validateFilmName(film));
         assertTrue(validator.validateFilmDescription(film));
@@ -34,7 +37,7 @@ class FilmValidatorTest extends FilmValidator {
     @Test
     void validateFilmShouldReturnFalseWhenFieldsIncorrect() {
         Film film = new Film(0, "", "", LocalDate.of(1855, 2, 12),
-                -103, rating, 8, likes, genres);
+                -103, rating, 8, likes, genres, director);
 
         assertFalse(validator.validateFilmName(film));
         assertFalse(validator.validateFilmReleaseDate(film));

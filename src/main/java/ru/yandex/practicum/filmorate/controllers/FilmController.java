@@ -35,6 +35,11 @@ public class FilmController {
         return film;
     }
 
+    @DeleteMapping("/{filmId}")
+    public void deleteFilm(@PathVariable Integer filmId) {
+        service.removeFilmById(filmId);
+    }
+
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable Integer id) {
         return service.getFilmById(id);
@@ -58,5 +63,22 @@ public class FilmController {
     @DeleteMapping("/{id}/like/{userId}")
     public void removeLikeFilm(@PathVariable(value = "id") Integer filmId, @PathVariable Integer userId) {
         service.removeLike(filmId, userId);
+    }
+
+    @GetMapping("/common?userId={userId}&friendId={friendId}")
+    public void getCommonFilms(@RequestParam(value = "userId") Integer userId,
+                               @RequestParam(value = "friendId") Integer friendId) {
+        service.getCommonFilms(userId, friendId);
+    }
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getDirectorFilms(@PathVariable Integer directorId,
+                                        @RequestParam(defaultValue = "likes", required = false) String sortBy) {
+
+        if (!(sortBy.equals("year") || sortBy.equals("likes"))) {
+            throw new IllegalArgumentException("Сортировка возможна либо по годам, либо по количеству лайков");
+        }
+
+        return service.getDirectorFilms(directorId, sortBy);
     }
 }
