@@ -182,4 +182,23 @@ public class FilmDbStorage implements FilmStorage {
                 .mpa(mpaStorage.findMPAById(rs.getInt("age_id")))
                 .build();
     }
+
+    public List<Film> getCommonFilms(Integer userId, Integer friendId) {
+
+        String sql = "SELECT f.film_id " +
+                     "FROM Film AS f " +
+                     "JOIN Film_like AS l ON f.film_id = l.film_id " +
+                     "WHERE f.film_id IN (SELECT film_id " +
+                                         "FROM Film_like AS l2 " +
+                                         "WHERE user_id IN (?,?) " +
+                                         "GROUP BY film_id " +
+                                         "HAVING COUNT(user_id) = 2) " +
+                    "GROUP BY f.film_id " +
+                    "ORDER BY f.rate DESC";
+        List<Film> films = jdbcTemplate.queryForList(sql, Integer.class, userId, friendId)
+                .stream()
+                .map(this::findFilmById)
+                .collect(Collectors.toList());
+        return films;
+    }
 }
