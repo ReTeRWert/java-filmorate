@@ -195,10 +195,9 @@ public class FilmDbStorage implements FilmStorage {
                                          "HAVING COUNT(user_id) = 2) " +
                     "GROUP BY f.film_id " +
                     "ORDER BY f.rate DESC";
-        List<Film> films = jdbcTemplate.queryForList(sql, Integer.class, userId, friendId)
+        return jdbcTemplate.queryForList(sql, Integer.class, userId, friendId)
                 .stream()
                 .map(this::findFilmById)
                 .collect(Collectors.toList());
-        return films;
     }
 }
