@@ -34,18 +34,18 @@ public class ReviewController {
     }
 
     @DeleteMapping("/{reviewId}")
-    public void deleteReview(@PathVariable Integer reviewId) {
+    public void deleteReview(@PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
         log.info("Ревью удалено.");
     }
 
     @GetMapping("/{reviewId}")
-    public Review getReviewById(@PathVariable Integer reviewId) {
+    public Review getReviewById(@PathVariable Long reviewId) {
         return reviewService.getReviewById(reviewId);
     }
 
     @GetMapping()
-    public List<Review> getReviewsByFilmId(@RequestParam(required = false) Integer filmId,
+    public List<Review> getReviewsByFilmId(@RequestParam(required = false) Long filmId,
                                            @RequestParam(defaultValue = "10", required = false) int count) {
         if (filmId == null) {
             return reviewService.getAllReviews();
@@ -58,29 +58,29 @@ public class ReviewController {
     }
 
     @PutMapping("/{reviewId}/like/{userId}")
-    public void addLikeReview(@PathVariable Integer reviewId,
-                              @PathVariable Integer userId) {
+    public void addLikeReview(@PathVariable Long reviewId,
+                              @PathVariable Long userId) {
 
         reviewService.addLikeReview(reviewId, userId);
     }
 
     @PutMapping("/{reviewId}/dislike/{userId}")
-    public void addDislikeReview(@PathVariable Integer reviewId,
-                                 @PathVariable Integer userId) {
+    public void addDislikeReview(@PathVariable Long reviewId,
+                                 @PathVariable Long userId) {
 
         reviewService.addDislikeReview(reviewId, userId);
     }
 
     @DeleteMapping("/{reviewId}/like/{userId}")
-    public void deleteLikeReview(@PathVariable Integer reviewId,
-                                 @PathVariable Integer userId) {
+    public void deleteLikeReview(@PathVariable Long reviewId,
+                                 @PathVariable Long userId) {
 
         reviewService.deleteLikeReview(reviewId, userId);
     }
 
     @DeleteMapping("/{reviewId}/dislike/{userId}")
-    public void deleteDislikeReview(@PathVariable Integer reviewId,
-                                    @PathVariable Integer userId) {
+    public void deleteDislikeReview(@PathVariable Long reviewId,
+                                    @PathVariable Long userId) {
 
         reviewService.deleteDislikeReview(reviewId, userId);
     }

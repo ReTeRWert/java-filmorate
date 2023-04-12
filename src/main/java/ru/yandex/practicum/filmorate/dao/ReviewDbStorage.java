@@ -39,7 +39,7 @@ public class ReviewDbStorage implements ReviewStorage {
                 .withTableName("reviews")
                 .usingGeneratedKeyColumns("review_id");
 
-        Integer reviewId = simpleJdbcInsert.executeAndReturnKey(toMap(review)).intValue();
+        Long reviewId = simpleJdbcInsert.executeAndReturnKey(toMap(review)).longValue();
         review.setReviewId(reviewId);
 
         return review;
@@ -55,7 +55,7 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public void deleteReview(Integer reviewId) {
+    public void deleteReview(Long reviewId) {
         String sql = "DELETE " +
                 "FROM reviews " +
                 "WHERE review_id =?";
@@ -64,7 +64,7 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public Review getReviewById(Integer reviewId) {
+    public Review getReviewById(Long reviewId) {
         String sql = "SELECT * " +
                 "FROM reviews " +
                 "WHERE review_id =?";
@@ -85,7 +85,7 @@ public class ReviewDbStorage implements ReviewStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeReview(rs));
     }
 
-    public List<Review> getReviewsByFilmId(Integer filmId, Integer count) {
+    public List<Review> getReviewsByFilmId(Long filmId, Integer count) {
         String sql = "SELECT * " +
                 "FROM reviews " +
                 "WHERE film_id =? " +
@@ -110,10 +110,10 @@ public class ReviewDbStorage implements ReviewStorage {
 
     private Review makeReview(ResultSet rs) throws SQLException {
         Review review = new Review();
-        review.setReviewId(rs.getInt("review_id"));
+        review.setReviewId(rs.getLong("review_id"));
         review.setContent(rs.getString("content"));
-        review.setUserId(rs.getInt("user_id"));
-        review.setFilmId(rs.getInt("film_id"));
+        review.setUserId(rs.getLong("user_id"));
+        review.setFilmId(rs.getLong("film_id"));
         review.setUseful(rs.getInt("useful"));
         review.setIsPositive(rs.getBoolean("is_positive"));
         return review;

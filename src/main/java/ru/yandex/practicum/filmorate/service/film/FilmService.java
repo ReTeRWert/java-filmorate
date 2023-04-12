@@ -5,8 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Feed;
+import ru.yandex.practicum.filmorate.model.FeedEventType;
+import ru.yandex.practicum.filmorate.model.FeedOperation;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Comparator;
@@ -20,12 +24,14 @@ import java.util.stream.Collectors;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final FeedStorage feedStorage;
 
     @Autowired
     public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
-                       @Qualifier("userDbStorage") UserStorage userStorage) {
+                       @Qualifier("userDbStorage") UserStorage userStorage, FeedStorage feedStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
+        this.feedStorage = feedStorage;
     }
 
     public List<Film> getFilms() {
@@ -60,6 +66,12 @@ public class FilmService {
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() + 1);
         userStorage.findUserById(userId).getFilmsLike().add(filmId);
+        feedStorage.addFeed(Feed.builder().
+                operation(FeedOperation.ADD).
+                eventType(FeedEventType.LIKE).
+                entityId(filmId).
+                userId(userId).
+                build());
     }
 
     public void removeFilmLike(long filmId, long userId) {
@@ -67,5 +79,11 @@ public class FilmService {
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() - 1);
         userStorage.findUserById(userId).getFilmsLike().remove(filmId);
+        feedStorage.addFeed(Feed.builder().
+                operation(FeedOperation.REMOVE).
+                eventType(FeedEventType.LIKE).
+                entityId(filmId).
+                userId(userId).
+                build());
     }
 }

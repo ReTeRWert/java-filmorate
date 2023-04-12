@@ -10,10 +10,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class Review {
-    private Integer reviewId;
+    private Long reviewId;
     private String content;
     private Boolean isPositive;
-    private Integer userId;
-    private Integer filmId;
+    private Long userId;
+    private Long filmId;
     private Integer useful = 0;
 }

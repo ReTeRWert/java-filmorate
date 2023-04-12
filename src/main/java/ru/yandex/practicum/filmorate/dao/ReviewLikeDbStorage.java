@@ -23,7 +23,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
 
 
     @Override
-    public void addLike(Integer reviewId, Integer userId) {
+    public void addLike(Long reviewId, Long userId) {
         if (userDbStorage.findUserById(userId) == null) {
             throw new ValidationException("Пользователь не найден.");
         }
@@ -41,7 +41,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     @Override
-    public void deleteLike(Integer reviewId, Integer userId) {
+    public void deleteLike(Long reviewId, Long userId) {
         if (userDbStorage.findUserById(userId) == null) {
             throw new ValidationException("Пользователь не найден.");
         }
@@ -54,7 +54,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     @Override
-    public void addDislike(Integer reviewId, Integer userId) {
+    public void addDislike(Long reviewId, Long userId) {
         if (userDbStorage.findUserById(userId) == null) {
             throw new ValidationException("Пользователь не найден.");
         }
@@ -72,7 +72,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     @Override
-    public void deleteDislike(Integer reviewId, Integer userId) {
+    public void deleteDislike(Long reviewId, Long userId) {
         if (userDbStorage.findUserById(userId) == null) {
             throw new ValidationException("Пользователь не найден.");
         }
@@ -84,7 +84,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
         updateUseful(reviewId, true);
     }
 
-    public void updateUseful(int reviewId, boolean like) {
+    public void updateUseful(Long reviewId, boolean like) {
         if (reviewDbStorage.getReviewById(reviewId) == null) {
             throw new ValidationException("Отзыв не найден.");
         }

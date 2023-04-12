@@ -29,13 +29,13 @@ public class ReviewValidator {
         }
     }
 
-    private void validateFilmId(Integer filmId) {
+    private void validateFilmId(Long filmId) {
         if (filmId == null) {
             throw new ValidationException("Фильм не указан");
         }
     }
 
-    private void validateUserId(Integer userId) {
+    private void validateUserId(Long userId) {
         if (userId == null) {
             throw new ValidationException("Пользователь не указан");
         }

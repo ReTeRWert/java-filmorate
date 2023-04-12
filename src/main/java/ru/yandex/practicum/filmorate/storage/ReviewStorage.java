@@ -7,9 +7,9 @@ public interface ReviewStorage {
 
     Review updateReview(Review review);
 
-    void deleteReview(Integer reviewId);
+    void deleteReview(Long reviewId);
 
-    Review getReviewById(Integer reviewId);
+    Review getReviewById(Long reviewId);
 
     Iterable<Review> getAllReviews();
 }
