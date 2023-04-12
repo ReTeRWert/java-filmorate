@@ -25,12 +25,7 @@ public class ReviewService {
         if (review.getReviewId() != null) {
             throw new ValidationException("Ревью уже существует");
         }
-        feedStorage.addFeed(Feed.builder().
-                operation(FeedOperation.ADD).
-                eventType(FeedEventType.REVIEW).
-                entityId(review.getFilmId()).
-                userId(review.getUserId()).
-                build());
+        feedStorage.addFeed(Feed.builder().operation(FeedOperation.ADD).eventType(FeedEventType.REVIEW).entityId(review.getFilmId()).userId(review.getUserId()).build());
         return reviewDbStorage.createReview(review);
     }
 
@@ -38,12 +33,7 @@ public class ReviewService {
         if (reviewDbStorage.getReviewById(review.getReviewId()) == null) {
             throw new ValidationException("Ревью не существует.");
         }
-        feedStorage.addFeed(Feed.builder().
-                operation(FeedOperation.UPDATE).
-                eventType(FeedEventType.REVIEW).
-                entityId(review.getFilmId()).
-                userId(review.getUserId()).
-                build());
+        feedStorage.addFeed(Feed.builder().operation(FeedOperation.UPDATE).eventType(FeedEventType.REVIEW).entityId(review.getFilmId()).userId(review.getUserId()).build());
         return reviewDbStorage.updateReview(review);
     }
 
@@ -51,12 +41,7 @@ public class ReviewService {
         if (reviewDbStorage.getReviewById(reviewId) == null) {
             throw new ValidationException("Ревью не существует");
         }
-        feedStorage.addFeed(Feed.builder().
-                operation(FeedOperation.REMOVE).
-                eventType(FeedEventType.REVIEW).
-                entityId(getReviewById(reviewId).getFilmId()).
-                userId(getReviewById(reviewId).getUserId()).
-                build());
+        feedStorage.addFeed(Feed.builder().operation(FeedOperation.REMOVE).eventType(FeedEventType.REVIEW).entityId(getReviewById(reviewId).getFilmId()).userId(getReviewById(reviewId).getUserId()).build());
         reviewDbStorage.deleteReview(reviewId);
     }
 

@@ -26,8 +26,7 @@ public class UserService {
     private final FeedStorage feedStorage;
 
     @Autowired
-    public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
-                       @Qualifier("filmDbStorage") FilmStorage filmStorage, FeedStorage feedStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, @Qualifier("filmDbStorage") FilmStorage filmStorage, FeedStorage feedStorage) {
         this.userStorage = userStorage;
         this.filmStorage = filmStorage;
         this.feedStorage = feedStorage;
@@ -56,12 +55,7 @@ public class UserService {
             throw new NotFoundException("User with id = " + friendId + " not found");
         } else {
             userStorage.addFriend(userId, friendId);
-            feedStorage.addFeed(Feed.builder().
-                    operation(FeedOperation.ADD).
-                    eventType(FeedEventType.FRIEND).
-                    entityId(friendId).
-                    userId(userId).
-                    build());
+            feedStorage.addFeed(Feed.builder().operation(FeedOperation.ADD).eventType(FeedEventType.FRIEND).entityId(friendId).userId(userId).build());
             return userStorage.update(user);
         }
     }
@@ -76,12 +70,7 @@ public class UserService {
             throw new NotFoundException("User with id = " + friendId + " not found");
         } else {
             userStorage.removeFriend(userId, friendId);
-            feedStorage.addFeed(Feed.builder().
-                    operation(FeedOperation.REMOVE).
-                    eventType(FeedEventType.FRIEND).
-                    entityId(friendId).
-                    userId(userId).
-                    build());
+            feedStorage.addFeed(Feed.builder().operation(FeedOperation.REMOVE).eventType(FeedEventType.FRIEND).entityId(friendId).userId(userId).build());
             return userStorage.update(user);
         }
     }
