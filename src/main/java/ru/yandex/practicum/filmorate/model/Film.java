@@ -14,7 +14,7 @@ import static ru.yandex.practicum.filmorate.model.Constants.MAX_LENGTH_DESCRIPTI
 
 @Data
 @Builder(toBuilder = true)
-public class Film {
+public class Film  {
     private int rate;
     private Long id;
     @NotBlank(message = "Название не может быть пустым;")
@@ -28,3 +28,4 @@ public class Film {
     @Positive(message = "Продолжительность фильма должна быть положительной.")
     private Long duration;
 }
+
