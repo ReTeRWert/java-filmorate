@@ -44,6 +44,10 @@ public class FilmService {
         return filmStorage.findFilmById(id);
     }
 
+    public void deleteFilmById(long filmId) {
+        filmStorage.deleteFilmById(filmId);
+    }
+
     public List<Film> getPopular(int count) {
         return filmStorage.getFilms().stream()
                 .sorted(Comparator.comparingInt(Film::getRate).reversed())

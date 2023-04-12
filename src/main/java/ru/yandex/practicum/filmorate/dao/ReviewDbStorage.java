@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
@@ -31,17 +30,9 @@ public class ReviewDbStorage implements ReviewStorage {
         if (filmDbStorage.findFilmById(review.getFilmId()) == null) {
             throw new NotFoundException("Такой фильм не существует");
         }
-        if (review.getFilmId() == null) {
-            throw new ValidationException("Фильм не указан");
-        }
-        if (review.getUserId() == null) {
-            throw new ValidationException("Пользователь не указан");
-        }
+
         if (userDbStorage.findUserById(review.getUserId()) == null) {
             throw new NotFoundException("Такой пользователь не существует");
-        }
-        if (review.getContent() == null) {
-            throw new NotFoundException("Отзыв не может быть пустым");
         }
 
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
