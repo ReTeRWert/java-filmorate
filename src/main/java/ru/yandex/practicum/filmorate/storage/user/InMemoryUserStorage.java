@@ -76,4 +76,9 @@ public class InMemoryUserStorage implements UserStorage {
     public void removeFilmLike(long filmId, long userId) {
 
     }
+
+    @Override
+    public void deleteUserById(Long userId) {
+
+    }
 }

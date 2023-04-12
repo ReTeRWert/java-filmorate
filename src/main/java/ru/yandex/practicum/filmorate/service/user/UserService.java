@@ -68,6 +68,10 @@ public class UserService {
         }
     }
 
+    public void deleteUserById(Long userId) {
+        userStorage.deleteUserById(userId);
+    }
+
     public User get(Long userId) throws NotFoundException {
         final User user = userStorage.findUserById(userId);
         if (user == null) {

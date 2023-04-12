@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS Age_rating CASCADE;
 DROP TABLE IF EXISTS Film CASCADE;
 DROP TABLE IF EXISTS Film_like CASCADE;
 DROP TABLE IF EXISTS FilmGenre CASCADE;
+DROP TABLE IF EXISTS reviews CASCADE;
+DROP TABLE IF EXISTS review_likes CASCADE;
 
 CREATE TABLE IF NOT EXISTS Users (
   user_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -58,4 +60,27 @@ CREATE TABLE IF NOT EXISTS Film_like (
   PRIMARY KEY(user_id, film_id),
   FOREIGN KEY(user_id) REFERENCES Users(user_id),
   FOREIGN KEY(film_id) REFERENCES Film(film_id)
+);
+
+CREATE TABLE IF NOT EXISTS reviews
+(
+    review_id    int PRIMARY KEY auto_increment,
+    content      varchar(1000),
+    user_id      int REFERENCES users(user_id),
+    film_id      int REFERENCES Film(film_id),
+    useful       int,
+    is_positive  BOOLEAN
+);
+
+CREATE TABLE IF NOT EXISTS review_likes
+(
+    review_id    INTEGER,
+    user_id      INTEGER,
+    is_positive  BOOLEAN,
+    CONSTRAINT IF NOT EXISTS REVIEW_LIKES_PK
+        PRIMARY KEY (review_id, user_id),
+    CONSTRAINT IF NOT EXISTS REVIEW_LIKES_FK_USER_ID
+        FOREIGN KEY (user_id) REFERENCES users ON DELETE CASCADE,
+    constraint IF NOT EXISTS REVIEW_LIKES_FK_REVIEW_ID
+        foreign key (REVIEW_ID) references REVIEWS on delete cascade
 );
