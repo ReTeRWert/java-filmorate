@@ -65,7 +65,7 @@ public class FilmService {
         userStorage.findUserById(userId).getFilmsLike().remove(filmId);
     }
 
-    public List<Film> getCommonFilms(Integer userId, Integer friendId) {
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
 
         return filmStorage.getCommonFilms(userId, friendId);
     }

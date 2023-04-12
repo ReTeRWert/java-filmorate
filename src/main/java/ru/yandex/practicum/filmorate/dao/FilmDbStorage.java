@@ -183,7 +183,7 @@ public class FilmDbStorage implements FilmStorage {
                 .build();
     }
 
-    public List<Film> getCommonFilms(Integer userId, Integer friendId) {
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
 
         String sql = "SELECT f.film_id " +
                      "FROM Film AS f " +
