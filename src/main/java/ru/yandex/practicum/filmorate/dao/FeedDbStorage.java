@@ -52,11 +52,7 @@ public class FeedDbStorage implements FeedStorage {
 
     @Override
     public List<Feed> getFeed(Long userId) {
-        String sqlSelect = "SELECT * FROM USER_FEED WHERE USER_ID = ? \n" +
-                "UNION SELECT * FROM USER_FEED WHERE USER_ID IN (\n" +
-                "SELECT FRIEND_ID FROM friendship WHERE user_id = ? AND status = 'ACCEPTED')\n" +
-                "AND EVENT_TYPE <> 'FRIEND'\n" +
-                "ORDER BY TIME_CREATE DESC";
+        String sqlSelect = "SELECT * FROM USER_FEED WHERE USER_ID = ? \n" + "UNION SELECT * FROM USER_FEED WHERE USER_ID IN (\n" + "SELECT FRIEND_ID FROM friendship WHERE user_id = ? AND status = 'ACCEPTED')\n" + "AND EVENT_TYPE <> 'FRIEND'\n" + "ORDER BY TIME_CREATE DESC";
         List<Feed> feeds = jdbcTemplate.query(sqlSelect, (rs, rowNum) -> makeFeed(rs), userId, userId);
         if (feeds.isEmpty()) {
             return Collections.emptyList();
@@ -72,12 +68,6 @@ public class FeedDbStorage implements FeedStorage {
         Long userId = res.getLong("USER_ID");
         ZonedDateTime timestamp = res.getObject(6, java.time.ZonedDateTime.class);
 
-        return Feed.builder().
-                eventId(eventId).
-                timestamp(timestamp).
-                eventType(eventType).
-                entityId(entityId).
-                operation(operation).
-                userId(userId).build();
+        return Feed.builder().eventId(eventId).timestamp(timestamp).eventType(eventType).entityId(entityId).operation(operation).userId(userId).build();
     }
 }
