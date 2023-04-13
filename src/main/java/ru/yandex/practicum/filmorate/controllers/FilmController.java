@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.ErrorResponse;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
-import java.time.LocalDate;
 import java.util.Collection;
 
 @Slf4j
@@ -39,13 +38,11 @@ public class FilmController {
         return filmService.findFilmById(id);
     }
 
-
     @GetMapping("/popular")
     public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count,
-                                       @RequestParam(required=false) Integer genreId,
-                                       @RequestParam(required=false) Integer year) {
+                                       @RequestParam(required = false) Integer genreId,
+                                       @RequestParam(required = false) Integer year) {
         log.debug("Входящий запрос на получение первых {} популярных фильмов с жанром {} за год {}", count, genreId, year);
-
         return filmService.getPopular(count, genreId, year);
     }
 
