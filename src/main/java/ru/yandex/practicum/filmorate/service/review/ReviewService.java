@@ -45,7 +45,7 @@ public class ReviewService {
             throw new ValidationException("Ревью не существует.");
         } else {
             Review reviewInStorage = reviewDbStorage.updateReview(review);
-            feedStorage.addFeed(Feed.builder().operation(FeedOperation.UPDATE).eventType(FeedEventType.REVIEW).entityId(reviewInStorage.getReviewId()).userId(review.getUserId()).build());
+            feedStorage.addFeed(Feed.builder().operation(FeedOperation.UPDATE).eventType(FeedEventType.REVIEW).entityId(reviewInStorage.getReviewId()).userId(reviewInStorage.getUserId()).build());
             return reviewInStorage;
         }
 
