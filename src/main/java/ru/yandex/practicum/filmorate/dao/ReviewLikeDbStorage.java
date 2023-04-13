@@ -23,10 +23,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
 
 
     @Override
-    public void addLike(Integer reviewId, Integer userId) {
-        if (userDbStorage.findUserById(userId) == null) {
-            throw new ValidationException("Пользователь не найден.");
-        }
+    public void addLike(Long reviewId, Long userId) {
 
         ReviewLike like = ReviewLike.builder()
                 .reviewId(reviewId)
@@ -41,10 +38,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     @Override
-    public void deleteLike(Integer reviewId, Integer userId) {
-        if (userDbStorage.findUserById(userId) == null) {
-            throw new ValidationException("Пользователь не найден.");
-        }
+    public void deleteLike(Long reviewId, Long userId) {
 
         String sql = "DELETE FROM review_likes " +
                 "WHERE review_id =? AND user_id =?";
@@ -54,10 +48,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     @Override
-    public void addDislike(Integer reviewId, Integer userId) {
-        if (userDbStorage.findUserById(userId) == null) {
-            throw new ValidationException("Пользователь не найден.");
-        }
+    public void addDislike(Long reviewId, Long userId) {
 
         ReviewLike like = ReviewLike.builder()
                 .reviewId(reviewId)
@@ -72,7 +63,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     @Override
-    public void deleteDislike(Integer reviewId, Integer userId) {
+    public void deleteDislike(Long reviewId, Long userId) {
         if (userDbStorage.findUserById(userId) == null) {
             throw new ValidationException("Пользователь не найден.");
         }
@@ -84,7 +75,7 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
         updateUseful(reviewId, true);
     }
 
-    public void updateUseful(int reviewId, boolean like) {
+    public void updateUseful(Long reviewId, boolean like) {
         if (reviewDbStorage.getReviewById(reviewId) == null) {
             throw new ValidationException("Отзыв не найден.");
         }

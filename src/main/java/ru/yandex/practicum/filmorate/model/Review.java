@@ -5,15 +5,23 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class Review {
-    private Integer reviewId;
+    private Long reviewId;
+    @NotNull
+    @NotBlank
     private String content;
+    @NotNull
     private Boolean isPositive;
-    private Integer userId;
-    private Integer filmId;
+    @NotNull
+    private Long userId;
+    @NotNull
+    private Long filmId;
     private Integer useful = 0;
 }

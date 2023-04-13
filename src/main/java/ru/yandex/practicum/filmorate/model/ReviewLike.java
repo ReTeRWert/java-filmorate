@@ -8,7 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class ReviewLike {
-    private Integer reviewId;
-    private Integer userId;
+    private Long reviewId;
+    private Long userId;
     private Boolean like;
 }
