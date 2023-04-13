@@ -56,10 +56,9 @@ public class FilmService {
                 .collect(Collectors.toList());
     }
 
-
-    private boolean filterPopular(Film f, Integer genreId ,Integer year) {
+    private boolean filterPopular(Film f, Integer genreId, Integer year) {
         if (genreId != null) {
-            return  f.getGenres().stream()
+            return f.getGenres().stream()
                     .filter(Genre -> Genre.getId() == genreId).count() == 1;
         }
         if (year != null) {
