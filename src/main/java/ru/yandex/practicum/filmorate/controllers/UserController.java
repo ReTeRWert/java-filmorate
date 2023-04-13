@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
+import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
@@ -57,6 +58,12 @@ public class UserController {
         userService.deleteFriend(id, friendId);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) throws RuntimeException {
+        log.debug("Входящий запрос на удаление пользователя с id = {}", id);
+        userService.deleteUserById(id);
+    }
+
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) throws RuntimeException {
         log.debug("Входящий запрос на получение информации по пользователю с id = {}", id);
@@ -75,6 +82,13 @@ public class UserController {
         log.debug("Входящий запрос на получения списка общих друзей для пользователей с id = {} и пользователя "
                 + "с id = {}", id, otherId);
         return userService.getCommonFriends(id, otherId);
+    }
+
+    @GetMapping("/{id}/feed")
+    public Collection<Feed> getFeed(@PathVariable Long id)
+            throws RuntimeException {
+        log.debug("Входящий запрос на получение ленты событий для пользователя с id = {}", id);
+        return userService.getFeed(id);
     }
 
     @ExceptionHandler

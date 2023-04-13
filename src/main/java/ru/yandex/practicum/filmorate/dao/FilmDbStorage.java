@@ -183,8 +183,8 @@ public class FilmDbStorage implements FilmStorage {
                 .build();
     }
 
+    @Override
     public List<Film> getCommonFilms(Long userId, Long friendId) {
-
         String sql = "SELECT f.film_id " +
                      "FROM Film AS f " +
                      "JOIN Film_like AS l ON f.film_id = l.film_id " +
@@ -199,5 +199,11 @@ public class FilmDbStorage implements FilmStorage {
                 .stream()
                 .map(this::findFilmById)
                 .collect(Collectors.toList());
+    }
+    
+    @Override
+    public void deleteFilmById(long filmId) {
+        String sql = "DELETE FROM Film WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
     }
 }

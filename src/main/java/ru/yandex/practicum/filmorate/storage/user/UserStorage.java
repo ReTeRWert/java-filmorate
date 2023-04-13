@@ -26,4 +26,5 @@ public interface UserStorage {
 
     void removeFilmLike(long filmId, long userId);
 
+    void deleteUserById(Long userId);
 }

@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Feed;
+import ru.yandex.practicum.filmorate.model.FeedEventType;
+import ru.yandex.practicum.filmorate.model.FeedOperation;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
@@ -19,12 +23,13 @@ import java.util.List;
 public class UserService {
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
+    private final FeedStorage feedStorage;
 
     @Autowired
-    public UserService(@Qualifier("userDbStorage") UserStorage userStorage,
-                       @Qualifier("filmDbStorage") FilmStorage filmStorage) {
+    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, @Qualifier("filmDbStorage") FilmStorage filmStorage, FeedStorage feedStorage) {
         this.userStorage = userStorage;
         this.filmStorage = filmStorage;
+        this.feedStorage = feedStorage;
     }
 
     public User create(User user) {
@@ -41,8 +46,8 @@ public class UserService {
     }
 
     public User addFriend(Long userId, Long friendId) throws NotFoundException {
-        final User user = userStorage.findUserById(userId.longValue());
-        final User friend = userStorage.findUserById(friendId.longValue());
+        final User user = userStorage.findUserById(userId);
+        final User friend = userStorage.findUserById(friendId);
 
         if (user == null) {
             throw new NotFoundException("User with id = " + userId + " not found");
@@ -50,13 +55,14 @@ public class UserService {
             throw new NotFoundException("User with id = " + friendId + " not found");
         } else {
             userStorage.addFriend(userId, friendId);
+            feedStorage.addFeed(Feed.builder().operation(FeedOperation.ADD).eventType(FeedEventType.FRIEND).entityId(friendId).userId(userId).build());
             return userStorage.update(user);
         }
     }
 
     public User deleteFriend(Long userId, Long friendId) throws NotFoundException {
-        User user = userStorage.findUserById(userId.longValue());
-        User friend = userStorage.findUserById(friendId.longValue());
+        User user = userStorage.findUserById(userId);
+        User friend = userStorage.findUserById(friendId);
 
         if (user == null) {
             throw new NotFoundException("User with id = " + userId + " not found");
@@ -64,8 +70,13 @@ public class UserService {
             throw new NotFoundException("User with id = " + friendId + " not found");
         } else {
             userStorage.removeFriend(userId, friendId);
+            feedStorage.addFeed(Feed.builder().operation(FeedOperation.REMOVE).eventType(FeedEventType.FRIEND).entityId(friendId).userId(userId).build());
             return userStorage.update(user);
         }
+    }
+
+    public void deleteUserById(Long userId) {
+        userStorage.deleteUserById(userId);
     }
 
     public User get(Long userId) throws NotFoundException {
@@ -81,18 +92,17 @@ public class UserService {
     }
 
     public List<User> getFriendsUser(Long userId) throws NotFoundException {
-        User user = userStorage.findUserById(userId.longValue());
+        User user = userStorage.findUserById(userId);
         if (user == null) {
             throw new NotFoundException("User with id = " + userId + " not found");
         } else {
-            List<User> friendsList = userStorage.getFriends(userId.longValue());
-            return friendsList;
+            return userStorage.getFriends(userId);
         }
     }
 
     public List<User> getCommonFriends(Long userId, Long otherUserId) throws NotFoundException {
-        User user = userStorage.findUserById(userId.longValue());
-        User otherUser = userStorage.findUserById(otherUserId.longValue());
+        User user = userStorage.findUserById(userId);
+        User otherUser = userStorage.findUserById(otherUserId);
 
         if (user == null) {
             throw new NotFoundException("User with id = " + userId + " not found");
@@ -100,6 +110,15 @@ public class UserService {
             throw new NotFoundException("User with id = " + otherUserId + " not found");
         } else {
             return userStorage.getCommonFriends(userId, otherUserId);
+        }
+    }
+
+    public List<Feed> getFeed(Long userId) {
+        User user = userStorage.findUserById(userId);
+        if (user == null) {
+            throw new NotFoundException("User with id = " + userId + " not found");
+        } else {
+            return feedStorage.getFeed(userId);
         }
     }
 }
