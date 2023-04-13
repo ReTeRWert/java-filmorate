@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
@@ -21,7 +20,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
-
 
 
     @Override
