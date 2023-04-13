@@ -79,7 +79,8 @@ public class FilmController {
         return filmService.getDirectorFilms(directorId, sortBy);
     }
 
-    @ExceptionHandler  @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFound(final NotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
