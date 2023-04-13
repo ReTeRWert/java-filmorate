@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.service.review.ReviewService;
-import ru.yandex.practicum.filmorate.validator.ReviewValidator;
 
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -16,36 +16,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
-    private final ReviewValidator reviewValidator;
 
     @PostMapping
-    public Review createReview(@RequestBody Review review) {
-        reviewValidator.validate(review);
+    public Review createReview(@Valid @RequestBody Review review) {
         reviewService.createReview(review);
         log.info("Создано ревью: {}", review);
         return review;
     }
 
     @PutMapping
-    public Review updateReview(@RequestBody Review review) {
-        reviewValidator.validate(review);
+    public Review updateReview(@Valid @RequestBody Review review) {
         log.info("Обновлено ревью: {}", review);
         return reviewService.updateReview(review);
     }
 
     @DeleteMapping("/{reviewId}")
-    public void deleteReview(@PathVariable Integer reviewId) {
+    public void deleteReview(@PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
         log.info("Ревью удалено.");
     }
 
     @GetMapping("/{reviewId}")
-    public Review getReviewById(@PathVariable Integer reviewId) {
+    public Review getReviewById(@PathVariable Long reviewId) {
         return reviewService.getReviewById(reviewId);
     }
 
     @GetMapping()
-    public List<Review> getReviewsByFilmId(@RequestParam(required = false) Integer filmId,
+    public List<Review> getReviewsByFilmId(@RequestParam(required = false) Long filmId,
                                            @RequestParam(defaultValue = "10", required = false) int count) {
         if (filmId == null) {
             return reviewService.getAllReviews();
@@ -58,29 +55,29 @@ public class ReviewController {
     }
 
     @PutMapping("/{reviewId}/like/{userId}")
-    public void addLikeReview(@PathVariable Integer reviewId,
-                              @PathVariable Integer userId) {
+    public void addLikeReview(@PathVariable Long reviewId,
+                              @PathVariable Long userId) {
 
         reviewService.addLikeReview(reviewId, userId);
     }
 
     @PutMapping("/{reviewId}/dislike/{userId}")
-    public void addDislikeReview(@PathVariable Integer reviewId,
-                                 @PathVariable Integer userId) {
+    public void addDislikeReview(@PathVariable Long reviewId,
+                                 @PathVariable Long userId) {
 
         reviewService.addDislikeReview(reviewId, userId);
     }
 
     @DeleteMapping("/{reviewId}/like/{userId}")
-    public void deleteLikeReview(@PathVariable Integer reviewId,
-                                 @PathVariable Integer userId) {
+    public void deleteLikeReview(@PathVariable Long reviewId,
+                                 @PathVariable Long userId) {
 
         reviewService.deleteLikeReview(reviewId, userId);
     }
 
     @DeleteMapping("/{reviewId}/dislike/{userId}")
-    public void deleteDislikeReview(@PathVariable Integer reviewId,
-                                    @PathVariable Integer userId) {
+    public void deleteDislikeReview(@PathVariable Long reviewId,
+                                    @PathVariable Long userId) {
 
         reviewService.deleteDislikeReview(reviewId, userId);
     }

@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
 import ru.yandex.practicum.filmorate.storage.ReviewStorage;
 
@@ -21,25 +20,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final UserDbStorage userDbStorage;
-    private final FilmDbStorage filmDbStorage;
 
 
     @Override
     public Review createReview(Review review) {
-        if (filmDbStorage.findFilmById(review.getFilmId()) == null) {
-            throw new NotFoundException("Такой фильм не существует");
-        }
-
-        if (userDbStorage.findUserById(review.getUserId()) == null) {
-            throw new NotFoundException("Такой пользователь не существует");
-        }
-
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reviews")
                 .usingGeneratedKeyColumns("review_id");
 
-        Integer reviewId = simpleJdbcInsert.executeAndReturnKey(toMap(review)).intValue();
+        Long reviewId = simpleJdbcInsert.executeAndReturnKey(toMap(review)).longValue();
         review.setReviewId(reviewId);
 
         return review;
@@ -55,7 +44,7 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public void deleteReview(Integer reviewId) {
+    public void deleteReview(Long reviewId) {
         String sql = "DELETE " +
                 "FROM reviews " +
                 "WHERE review_id =?";
@@ -64,14 +53,14 @@ public class ReviewDbStorage implements ReviewStorage {
     }
 
     @Override
-    public Review getReviewById(Integer reviewId) {
+    public Review getReviewById(Long reviewId) {
         String sql = "SELECT * " +
                 "FROM reviews " +
                 "WHERE review_id =?";
 
         List<Review> review = jdbcTemplate.query(sql, (rs, rowNum) -> makeReview(rs), reviewId);
         if (review.isEmpty()) {
-            throw new NotFoundException("Отзыв не существует");
+            return null;
         }
         return review.get(0);
     }
@@ -85,7 +74,7 @@ public class ReviewDbStorage implements ReviewStorage {
         return jdbcTemplate.query(sql, (rs, rowNum) -> makeReview(rs));
     }
 
-    public List<Review> getReviewsByFilmId(Integer filmId, Integer count) {
+    public List<Review> getReviewsByFilmId(Long filmId, Integer count) {
         String sql = "SELECT * " +
                 "FROM reviews " +
                 "WHERE film_id =? " +
@@ -110,10 +99,10 @@ public class ReviewDbStorage implements ReviewStorage {
 
     private Review makeReview(ResultSet rs) throws SQLException {
         Review review = new Review();
-        review.setReviewId(rs.getInt("review_id"));
+        review.setReviewId(rs.getLong("review_id"));
         review.setContent(rs.getString("content"));
-        review.setUserId(rs.getInt("user_id"));
-        review.setFilmId(rs.getInt("film_id"));
+        review.setUserId(rs.getLong("user_id"));
+        review.setFilmId(rs.getLong("film_id"));
         review.setUseful(rs.getInt("useful"));
         review.setIsPositive(rs.getBoolean("is_positive"));
         return review;
