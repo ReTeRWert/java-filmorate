@@ -11,7 +11,7 @@ import ru.yandex.practicum.filmorate.model.FeedEventType;
 import ru.yandex.practicum.filmorate.model.FeedOperation;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.user.FeedStorage;
+import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
@@ -75,10 +75,6 @@ public class UserService {
         }
     }
 
-    public void deleteUserById(Long userId) {
-        userStorage.deleteUserById(userId);
-    }
-
     public User get(Long userId) throws NotFoundException {
         final User user = userStorage.findUserById(userId);
         if (user == null) {
@@ -120,5 +116,12 @@ public class UserService {
         } else {
             return feedStorage.getFeed(userId);
         }
+    }
+
+    public void deleteUserById(Long userId) throws NotFoundException {
+        if (userStorage.findUserById(userId) == null) {
+            throw new NotFoundException("Пользователь с идентификатором: " + userId + " не найден.");
+        }
+        userStorage.deleteUserById(userId);
     }
 }

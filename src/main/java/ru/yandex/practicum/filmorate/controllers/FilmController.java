@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -77,8 +78,18 @@ public class FilmController {
         filmService.removeFilmLike(id, userId);
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @GetMapping("/director/{directorId}")
+    public List<Film> getDirectorFilms(@PathVariable Integer directorId,
+                                       @RequestParam(defaultValue = "likes", required = false) String sortBy) {
+
+        if (!(sortBy.equals("year") || sortBy.equals("likes"))) {
+            throw new IllegalArgumentException("Сортировка возможна либо по годам, либо по количеству лайков");
+        }
+
+        return filmService.getDirectorFilms(directorId, sortBy);
+    }
+
+    @ExceptionHandler  @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFound(final NotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
@@ -89,3 +100,4 @@ public class FilmController {
         return new ErrorResponse(e.getMessage());
     }
 }
+
