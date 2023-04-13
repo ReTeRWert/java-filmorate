@@ -27,7 +27,7 @@ public class FilmTest {
     private Film film2;
     @Mock
     private ConstraintValidatorContext constraintValidatorContext;
-   // private final GenreStorage genreStorage;
+
 
     public FilmTest() {
     }
@@ -80,24 +80,4 @@ public class FilmTest {
         Assertions.assertEquals("Продолжительность фильма должна быть положительной.", violations.iterator().next().getMessage());
     }
 
-
-//    @Test
-//    void checkCreatFilms(){
-//
-//        filmService.create(film);
-//    }
-
-
-//    @Test
-//    public void testGetGenreById() {
-//        List<Genre> list = Arrays.asList(new Genre(1, "Комедия"),
-//                new Genre(2, "Драма"),
-//                new Genre(3, "Мультфильм"),
-//                new Genre(4, "Триллер"),
-//                new Genre(5, "Документальный"),
-//                new Genre(6, "Боевик"));
-//        for (Genre genre : list) {
-//            assertEquals(genre, genreStorage.findGenreById(genre.getId()));
-//        }
-//    }
 }
