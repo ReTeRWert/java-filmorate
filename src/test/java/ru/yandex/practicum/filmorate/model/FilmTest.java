@@ -40,7 +40,7 @@ public class FilmTest {
                 .name("name")
                 .description("")
                 .releaseDate(LocalDate.of(1999, 9, 9))
-                .duration(99L)
+                .duration(90L)
                 .mpa(new MPA(3,"PG-13"))
                 .genres(Arrays.asList(new Genre(3, "Мультфильм")))
                 .build();
