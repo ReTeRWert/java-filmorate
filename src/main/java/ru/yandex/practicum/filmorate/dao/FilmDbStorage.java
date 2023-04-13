@@ -9,17 +9,16 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 @Repository
 @Qualifier
@@ -126,8 +125,9 @@ public class FilmDbStorage implements FilmStorage {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 ps.setLong(1, film.getId());
-                ps.setInt(2, film.getDirectors().get(i).getId());
+                ps.setLong(2, film.getDirectors().get(i).getId());
             }
+
             @Override
             public int getBatchSize() {
                 return film.getDirectors().size();
@@ -241,6 +241,39 @@ public class FilmDbStorage implements FilmStorage {
                 .duration(rs.getLong("duration"))
                 .rate(rs.getInt("rate"))
                 .genres(genres)
+                .mpa(mpaStorage.findMPAById(rs.getInt("age_id")))
+                .directors(directorStorage.findDirectorsByFilm(rs.getLong("film_id")))
+                .build();
+    }
+
+    public List<Film> getDirectorFilms(Long directorId, String sortBy) {
+        String sql;
+        if (sortBy.equals("year")) {
+            sql = "SELECT * " +
+                    "FROM film WHERE film_id IN (SELECT film_id " +
+                    "FROM director_films " +
+                    "WHERE director_id =? )" +
+                    "ORDER BY release_date";
+        } else {
+            sql = "SELECT * " +
+                    "FROM film WHERE film_id IN (SELECT film_id " +
+                    "FROM director_films " +
+                    "WHERE director_id =? )" +
+                    "ORDER BY rate DESC";
+        }
+
+        return jdbcTemplate.query(sql, ((rs, rowNum) -> makeFilm(rs)), directorId);
+    }
+
+    private Film makeFilm(ResultSet rs) throws SQLException {
+        return Film.builder()
+                .id(rs.getLong("film_id"))
+                .name(rs.getString("name"))
+                .description(rs.getString("description"))
+                .releaseDate(Objects.requireNonNull(rs.getDate("release_date")).toLocalDate())
+                .duration(rs.getLong("duration"))
+                .rate(rs.getInt("rate"))
+                .genres(genreStorage.getGenresByFilm(rs.getLong("film_id")))
                 .mpa(mpaStorage.findMPAById(rs.getInt("age_id")))
                 .directors(directorStorage.findDirectorsByFilm(rs.getLong("film_id")))
                 .build();

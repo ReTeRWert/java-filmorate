@@ -13,7 +13,12 @@ public class DirectorService {
     private final DirectorDbStorage directorDbStorage;
 
     public Director createDirector(Director director) {
-
+        if (director.getName() == null) {
+            throw new IllegalArgumentException("Имя должно быть задано.");
+        }
+        if (director.getName().isEmpty() || director.getName().isBlank()) {
+            throw new ValidationException("Имя не должно быть пустым.");
+        }
         return directorDbStorage.createDirector(director);
     }
 
@@ -21,17 +26,26 @@ public class DirectorService {
         if (directorDbStorage.getDirector(director.getId()) == null) {
             throw new ValidationException("Такой режиссер не существует.");
         }
+        if (director.getName() == null) {
+            throw new IllegalArgumentException("Имя должно быть задано.");
+        }
+        if (director.getName().isEmpty() || director.getName().isBlank()) {
+            throw new ValidationException("Имя не должно быть пустым.");
+        }
         directorDbStorage.updateDirector(director);
     }
 
-    public void deleteDirector(Integer directorId) {
+    public void deleteDirector(Long directorId) {
         if (directorDbStorage.getDirector(directorId) == null) {
             throw new ValidationException("Такой режиссер не существует.");
         }
         directorDbStorage.deleteDirector(directorId);
     }
 
-    public Director getDirector(Integer directorId) {
+    public Director getDirector(Long directorId) {
+        if (directorDbStorage.getDirector(directorId) == null) {
+            throw new ValidationException("Такой режиссер не существует.");
+        }
         return directorDbStorage.getDirector(directorId);
     }
 

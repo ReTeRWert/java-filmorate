@@ -2,11 +2,11 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.service.DirectorService;
-import ru.yandex.practicum.filmorate.validator.DirectorValidator;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/directors")
@@ -14,30 +14,27 @@ import ru.yandex.practicum.filmorate.validator.DirectorValidator;
 @RequiredArgsConstructor
 public class DirectorController {
     private final DirectorService directorService;
-    private final DirectorValidator directorValidator;
 
     @PostMapping
-    public Director create(@Validated @RequestBody Director director) {
-        directorValidator.validate(director);
+    public Director create(@Valid @RequestBody Director director) {
         return directorService.createDirector(director);
     }
 
     @PutMapping
-    public Director updateDirector(@RequestBody Director director) {
-        directorValidator.validate(director);
+    public Director updateDirector(@Valid @RequestBody Director director) {
         directorService.updateDirector(director);
         log.info("Обновлен режиссер: {}", director);
         return director;
     }
 
     @DeleteMapping("/{directorId}")
-    public void deleteDirector(@PathVariable Integer directorId) {
+    public void deleteDirector(@PathVariable Long directorId) {
         directorService.deleteDirector(directorId);
         log.info("Удален режиссер: {}", directorId);
     }
 
     @GetMapping("/{directorId}")
-    public Director getDirectorById(@PathVariable Integer directorId) {
+    public Director getDirectorById(@PathVariable Long directorId) {
         return directorService.getDirector(directorId);
     }
 
