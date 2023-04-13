@@ -132,7 +132,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public void deleteUserById(Long userId) {
         String sql = "DELETE FROM Users " +
-                     "WHERE user_id =?";
+                "WHERE user_id =?";
         jdbcTemplate.update(sql, userId);
     }
 }
