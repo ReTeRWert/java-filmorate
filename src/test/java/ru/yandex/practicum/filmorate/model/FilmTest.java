@@ -1,23 +1,18 @@
 package ru.yandex.practicum.filmorate.model;
 
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import ru.yandex.practicum.filmorate.dao.GenreStorage;
-import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.*;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.yandex.practicum.filmorate.model.Constants.MAX_LENGTH_DESCRIPTION_FILM;
 
 public class FilmTest {
@@ -28,10 +23,8 @@ public class FilmTest {
     @Mock
     private ConstraintValidatorContext constraintValidatorContext;
 
-
     public FilmTest() {
     }
-
 
     @BeforeEach
     void beforeEach() {
@@ -41,7 +34,7 @@ public class FilmTest {
                 .description("")
                 .releaseDate(LocalDate.of(1999, 9, 9))
                 .duration(90L)
-                .mpa(new MPA(3,"PG-13"))
+                .mpa(new MPA(3, "PG-13"))
                 .genres(Arrays.asList(new Genre(3, "Мультфильм")))
                 .build();
 
