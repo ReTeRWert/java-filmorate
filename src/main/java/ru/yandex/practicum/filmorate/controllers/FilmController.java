@@ -63,11 +63,11 @@ public class FilmController {
         return filmService.update(film);
     }
 
-    /*@DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
     public void deleteFilm(@PathVariable Long id) throws NotFoundException {
         log.debug("Входящий запрос на удаление фильма с id = {}", id);
-        filmService.delete(id);
-    }*/
+        filmService.deleteFilmById(id);
+    }
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable Long id, @PathVariable Long userId) throws NotFoundException {

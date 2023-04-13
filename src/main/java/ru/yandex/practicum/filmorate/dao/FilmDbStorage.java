@@ -182,4 +182,9 @@ public class FilmDbStorage implements FilmStorage {
                 .mpa(mpaStorage.findMPAById(rs.getInt("age_id")))
                 .build();
     }
+
+    public void deleteFilmById(long filmId) {
+        String sql = "DELETE FROM Film WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
+    }
 }

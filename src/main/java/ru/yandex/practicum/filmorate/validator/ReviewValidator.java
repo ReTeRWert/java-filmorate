@@ -16,7 +16,7 @@ public class ReviewValidator {
 
     private void validateContent(String content) {
         if (content == null) {
-            throw new ValidationException("Текст отзыва не может быть пустым.");
+            throw new ValidationException("Отзыв не может быть пустым");
         }
         if (content.isEmpty()) {
             throw new IllegalArgumentException("Текст отзыва не может быть пустым.");
@@ -31,13 +31,13 @@ public class ReviewValidator {
 
     private void validateFilmId(Integer filmId) {
         if (filmId == null) {
-            throw new IllegalArgumentException("Идентификатор фильма не может быть пустым.");
+            throw new ValidationException("Фильм не указан");
         }
     }
 
     private void validateUserId(Integer userId) {
         if (userId == null) {
-            throw new IllegalArgumentException("Идентификатор пользователя не может быть пустым.");
+            throw new ValidationException("Пользователь не указан");
         }
     }
 }

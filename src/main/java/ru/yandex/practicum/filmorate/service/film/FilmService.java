@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -45,27 +44,16 @@ public class FilmService {
         return filmStorage.findFilmById(id);
     }
 
-    public List<Film> getPopular(int count, Integer genreId, Integer year) {
+    public void deleteFilmById(long filmId) {
+        filmStorage.deleteFilmById(filmId);
+    }
+
+    public List<Film> getPopular(int count) {
         return filmStorage.getFilms().stream()
-                .filter(f -> filterPopular(f, genreId, year))
                 .sorted(Comparator.comparingInt(Film::getRate).reversed())
                 .limit(count)
                 .collect(Collectors.toList());
     }
-
-
-    private boolean filterPopular(Film f, Integer genreId ,Integer year) {
-        if (genreId != null) {
-            return  f.getGenres().stream()
-                    .filter(Genre -> Genre.getId() == genreId).count() == 1;
-        }
-        if (year != null) {
-            return f.getReleaseDate().getYear() == year;
-        }
-        return true;
-    }
-
-
 
     public void addFilmLike(long filmId, long userId) {
         userStorage.addFilmsLike(filmId, userId);
@@ -80,6 +68,4 @@ public class FilmService {
         film.setRate(film.getRate() - 1);
         userStorage.findUserById(userId).getFilmsLike().remove(filmId);
     }
-
-
 }

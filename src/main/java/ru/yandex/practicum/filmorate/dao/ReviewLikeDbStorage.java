@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.ReviewLike;
 import ru.yandex.practicum.filmorate.storage.ReviewLikeStorage;
 
@@ -18,10 +19,15 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final ReviewDbStorage reviewDbStorage;
+    private final UserDbStorage userDbStorage;
 
 
     @Override
     public void addLike(Integer reviewId, Integer userId) {
+        if (userDbStorage.findUserById(userId) == null) {
+            throw new ValidationException("Пользователь не найден.");
+        }
+
         ReviewLike like = ReviewLike.builder()
                 .reviewId(reviewId)
                 .userId(userId)
@@ -36,6 +42,10 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
 
     @Override
     public void deleteLike(Integer reviewId, Integer userId) {
+        if (userDbStorage.findUserById(userId) == null) {
+            throw new ValidationException("Пользователь не найден.");
+        }
+
         String sql = "DELETE FROM review_likes " +
                 "WHERE review_id =? AND user_id =?";
 
@@ -45,6 +55,10 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
 
     @Override
     public void addDislike(Integer reviewId, Integer userId) {
+        if (userDbStorage.findUserById(userId) == null) {
+            throw new ValidationException("Пользователь не найден.");
+        }
+
         ReviewLike like = ReviewLike.builder()
                 .reviewId(reviewId)
                 .userId(userId)
@@ -59,6 +73,10 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
 
     @Override
     public void deleteDislike(Integer reviewId, Integer userId) {
+        if (userDbStorage.findUserById(userId) == null) {
+            throw new ValidationException("Пользователь не найден.");
+        }
+
         String sql = "DELETE FROM review_likes " +
                 "WHERE review_id =? AND user_id =?";
 
@@ -67,6 +85,10 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
     }
 
     public void updateUseful(int reviewId, boolean like) {
+        if (reviewDbStorage.getReviewById(reviewId) == null) {
+            throw new ValidationException("Отзыв не найден.");
+        }
+
         Integer useful = reviewDbStorage.getReviewById(reviewId).getUseful();
         if (like) {
             useful += 1;
