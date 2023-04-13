@@ -24,9 +24,6 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
 
     @Override
     public void addLike(Long reviewId, Long userId) {
-        if (userDbStorage.findUserById(userId) == null) {
-            throw new ValidationException("Пользователь не найден.");
-        }
 
         ReviewLike like = ReviewLike.builder()
                 .reviewId(reviewId)
@@ -42,9 +39,6 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
 
     @Override
     public void deleteLike(Long reviewId, Long userId) {
-        if (userDbStorage.findUserById(userId) == null) {
-            throw new ValidationException("Пользователь не найден.");
-        }
 
         String sql = "DELETE FROM review_likes " +
                 "WHERE review_id =? AND user_id =?";
@@ -55,9 +49,6 @@ public class ReviewLikeDbStorage implements ReviewLikeStorage {
 
     @Override
     public void addDislike(Long reviewId, Long userId) {
-        if (userDbStorage.findUserById(userId) == null) {
-            throw new ValidationException("Пользователь не найден.");
-        }
 
         ReviewLike like = ReviewLike.builder()
                 .reviewId(reviewId)

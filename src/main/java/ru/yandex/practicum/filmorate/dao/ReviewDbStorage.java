@@ -21,20 +21,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ReviewDbStorage implements ReviewStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final UserDbStorage userDbStorage;
-    private final FilmDbStorage filmDbStorage;
+
 
 
     @Override
     public Review createReview(Review review) {
-        if (filmDbStorage.findFilmById(review.getFilmId()) == null) {
-            throw new NotFoundException("Такой фильм не существует");
-        }
-
-        if (userDbStorage.findUserById(review.getUserId()) == null) {
-            throw new NotFoundException("Такой пользователь не существует");
-        }
-
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("reviews")
                 .usingGeneratedKeyColumns("review_id");
@@ -71,7 +62,7 @@ public class ReviewDbStorage implements ReviewStorage {
 
         List<Review> review = jdbcTemplate.query(sql, (rs, rowNum) -> makeReview(rs), reviewId);
         if (review.isEmpty()) {
-            throw new NotFoundException("Отзыв не существует");
+            return null;
         }
         return review.get(0);
     }

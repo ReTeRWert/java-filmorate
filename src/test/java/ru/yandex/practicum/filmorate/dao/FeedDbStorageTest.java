@@ -20,17 +20,11 @@ public class FeedDbStorageTest {
     private final UserDbStorage userStorage;
     private final FeedDbStorage feedDbStorage;
     User user;
-    User friend;
 
     @BeforeEach
     void init() {
         User tempUser = User.builder().login("Mike").email("mike@mail.ru").birthday(LocalDate.of(2000, 12, 27)).build();
         user = userStorage.create(tempUser);
-
-        User tempFriend = User.builder().login("Friend Mike").email("friend@mail.ru").birthday(LocalDate.of(2000, 12, 27)).build();
-        friend = userStorage.create(tempFriend);
-
-        userStorage.addFriend(user.getId(), friend.getId());
 
     }
 
@@ -43,29 +37,29 @@ public class FeedDbStorageTest {
     }
 
     @Test
-    public void getFeed_SizeOfTheEventListShouldBe_2() {
+    public void getFeed_SizeOfTheEventListShouldBeGreaterThan_2() {
         Feed feed1 = Feed.builder().userId(user.getId()).entityId(1L).operation(FeedOperation.ADD).eventType(FeedEventType.FRIEND).build();
-        Feed feed2 = Feed.builder().userId(friend.getId()).entityId(1L).operation(FeedOperation.ADD).eventType(FeedEventType.LIKE).build();
+        Feed feed2 = Feed.builder().userId(user.getId()).entityId(1L).operation(FeedOperation.ADD).eventType(FeedEventType.LIKE).build();
 
-        Feed feed3 = Feed.builder().userId(friend.getId()).entityId(1L).operation(FeedOperation.ADD).eventType(FeedEventType.FRIEND).build();
+        Feed feed3 = Feed.builder().userId(user.getId()).entityId(1L).operation(FeedOperation.ADD).eventType(FeedEventType.FRIEND).build();
 
         feedDbStorage.addFeed(feed1);
         feedDbStorage.addFeed(feed2);
         feedDbStorage.addFeed(feed3);
-        assertThat(feedDbStorage.getFeed(user.getId()).size(), Matchers.is(2));
+        assertThat(feedDbStorage.getFeed(user.getId()).size(), Matchers.greaterThan(2));
     }
 
     @Test
-    public void getFeed_LastEventShouldBeTheFirstInList() {
+    public void getFeed_LastEventShouldBeTheLastInList() {
         Feed feed1 = Feed.builder().userId(user.getId()).entityId(1L).operation(FeedOperation.ADD).eventType(FeedEventType.FRIEND).build();
-        Feed feed2 = Feed.builder().userId(friend.getId()).entityId(1L).operation(FeedOperation.ADD).eventType(FeedEventType.LIKE).build();
+        Feed feed2 = Feed.builder().userId(user.getId()).entityId(1L).operation(FeedOperation.ADD).eventType(FeedEventType.LIKE).build();
 
-        Feed feed3 = Feed.builder().userId(friend.getId()).entityId(1L).operation(FeedOperation.ADD).eventType(FeedEventType.FRIEND).build();
+        Feed feed3 = Feed.builder().userId(user.getId()).entityId(1L).operation(FeedOperation.ADD).eventType(FeedEventType.FRIEND).build();
 
         feedDbStorage.addFeed(feed1);
         feedDbStorage.addFeed(feed2);
         feedDbStorage.addFeed(feed3);
-        assertThat(feedDbStorage.getFeed(user.getId()).get(0).getEventId(), Matchers.greaterThan(feedDbStorage.getFeed(user.getId()).get(1).getEventId()));
+        assertThat(feedDbStorage.getFeed(user.getId()).get(1).getEventId(), Matchers.greaterThan(feedDbStorage.getFeed(user.getId()).get(0).getEventId()));
     }
 
     @Test

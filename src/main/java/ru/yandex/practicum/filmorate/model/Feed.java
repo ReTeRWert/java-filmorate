@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.time.ZonedDateTime;
 
 @Data
@@ -18,6 +19,6 @@ public class Feed {
     private Long entityId;
     @NotNull
     private FeedEventType eventType;
-    private ZonedDateTime timestamp;
+    private Long timestamp;
 
 }

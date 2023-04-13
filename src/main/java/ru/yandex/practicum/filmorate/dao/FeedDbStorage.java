@@ -11,7 +11,7 @@ import ru.yandex.practicum.filmorate.storage.user.FeedStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.ZonedDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +34,10 @@ public class FeedDbStorage implements FeedStorage {
         parameters.put("OPERATION", feed.getOperation().name());
         parameters.put("EVENT_TYPE", feed.getEventType().name());
         parameters.put("USER_ID", feed.getUserId());
-        parameters.put("TIME_CREATE", ZonedDateTime.now());
+
+        long epoch = System.currentTimeMillis();
+        parameters.put("TIME_STAMP", epoch);
+
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
 
         return getFeedById(key.longValue());
@@ -52,8 +55,10 @@ public class FeedDbStorage implements FeedStorage {
 
     @Override
     public List<Feed> getFeed(Long userId) {
-        String sqlSelect = "SELECT * FROM USER_FEED WHERE USER_ID = ? \n" + "UNION SELECT * FROM USER_FEED WHERE USER_ID IN (\n" + "SELECT FRIEND_ID FROM friendship WHERE user_id = ? AND status = 'ACCEPTED')\n" + "AND EVENT_TYPE <> 'FRIEND'\n" + "ORDER BY TIME_CREATE DESC";
-        List<Feed> feeds = jdbcTemplate.query(sqlSelect, (rs, rowNum) -> makeFeed(rs), userId, userId);
+        String sqlSelect = "SELECT * FROM USER_FEED WHERE USER_ID = ?" +
+                "ORDER BY TIME_STAMP ASC";
+
+        List<Feed> feeds = jdbcTemplate.query(sqlSelect, (rs, rowNum) -> makeFeed(rs), userId);
         if (feeds.isEmpty()) {
             return Collections.emptyList();
         }
@@ -66,7 +71,7 @@ public class FeedDbStorage implements FeedStorage {
         FeedOperation operation = FeedOperation.valueOf(res.getString("OPERATION"));
         FeedEventType eventType = FeedEventType.valueOf(res.getString("EVENT_TYPE"));
         Long userId = res.getLong("USER_ID");
-        ZonedDateTime timestamp = res.getObject(6, java.time.ZonedDateTime.class);
+        Long timestamp = res.getLong("TIME_STAMP");
 
         return Feed.builder().eventId(eventId).timestamp(timestamp).eventType(eventType).entityId(entityId).operation(operation).userId(userId).build();
     }
