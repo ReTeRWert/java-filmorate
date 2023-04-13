@@ -55,12 +55,13 @@ public class FilmService {
         return filmStorage.findFilmById(id);
     }
 
-    public void deleteFilmById(long filmId) {
-        filmStorage.deleteFilmById(filmId);
-    }
-
     public List<Film> getPopular(int count) {
-        return filmStorage.getFilms().stream().sorted(Comparator.comparingInt(Film::getRate).reversed()).limit(count).collect(Collectors.toList());
+        return filmStorage.getFilms()
+                .stream()
+                .sorted(Comparator.comparingInt(Film::getRate)
+                        .reversed())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     public void addFilmLike(long filmId, long userId) {
@@ -68,7 +69,12 @@ public class FilmService {
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() + 1);
         userStorage.findUserById(userId).getFilmsLike().add(filmId);
-        feedStorage.addFeed(Feed.builder().operation(FeedOperation.ADD).eventType(FeedEventType.LIKE).entityId(filmId).userId(userId).build());
+        feedStorage.addFeed(Feed.builder()
+                .operation(FeedOperation.ADD)
+                .eventType(FeedEventType.LIKE)
+                .entityId(filmId)
+                .userId(userId)
+                .build());
     }
 
     public void removeFilmLike(long filmId, long userId) {
@@ -76,10 +82,24 @@ public class FilmService {
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() - 1);
         userStorage.findUserById(userId).getFilmsLike().remove(filmId);
-        feedStorage.addFeed(Feed.builder().operation(FeedOperation.REMOVE).eventType(FeedEventType.LIKE).entityId(filmId).userId(userId).build());
+        feedStorage.addFeed(Feed.builder()
+                .operation(FeedOperation.REMOVE)
+                .eventType(FeedEventType.LIKE)
+                .entityId(filmId)
+                .userId(userId)
+                .build());
     }
 
-    public List<Film> getDirectorFilms(Integer directorId, String sortBy) {
-        return directorStorage.getDirectorFilms(directorId, sortBy);
+    public List<Film> getDirectorFilms(Long directorId, String sortBy) {
+
+        if (!(sortBy.equals("year") || sortBy.equals("likes"))) {
+            throw new IllegalArgumentException("Сортировка возможна либо по годам, либо по количеству лайков");
+        }
+
+        if (directorStorage.getDirector(directorId) == null) {
+            throw new IllegalArgumentException("Режиссер не найден.");
+        }
+
+        return filmStorage.getDirectorFilms(directorId, sortBy);
     }
 }

@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,5 +30,19 @@ public class GenreStorage {
 
     public List<Genre> getGenreList() {
         return genreList;
+    }
+
+    public List<Genre> getGenresByFilm(Long filmId) {
+        String sql = "SELECT * " +
+                "FROM genre AS g " +
+                "WHERE g.genre_id IN (SELECT genre_id " +
+                "FROM FilmGenre " +
+                "WHERE film_id = ?)";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeGenre(rs), filmId);
+    }
+
+    private Genre makeGenre(ResultSet rs) throws SQLException {
+        return new Genre(rs.getInt("genre_id"),
+                rs.getString("name"));
     }
 }

@@ -60,12 +60,6 @@ public class FilmController {
         return filmService.update(film);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteFilm(@PathVariable Long id) throws NotFoundException {
-        log.debug("Входящий запрос на удаление фильма с id = {}", id);
-        filmService.deleteFilmById(id);
-    }
-
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable Long id, @PathVariable Long userId) throws NotFoundException {
         log.debug("Входящий запрос на проставление лайка пользователем с id = {} для фильма с id = {}", userId, id);
@@ -79,12 +73,8 @@ public class FilmController {
     }
 
     @GetMapping("/director/{directorId}")
-    public List<Film> getDirectorFilms(@PathVariable Integer directorId,
+    public List<Film> getDirectorFilms(@PathVariable Long directorId,
                                        @RequestParam(defaultValue = "likes", required = false) String sortBy) {
-
-        if (!(sortBy.equals("year") || sortBy.equals("likes"))) {
-            throw new IllegalArgumentException("Сортировка возможна либо по годам, либо по количеству лайков");
-        }
 
         return filmService.getDirectorFilms(directorId, sortBy);
     }
