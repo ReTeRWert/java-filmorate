@@ -6,31 +6,53 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import ru.yandex.practicum.filmorate.dao.GenreStorage;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.*;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.yandex.practicum.filmorate.model.Constants.MAX_LENGTH_DESCRIPTION_FILM;
 
 public class FilmTest {
-
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private Film film;
+    private Film film2;
     @Mock
     private ConstraintValidatorContext constraintValidatorContext;
+   // private final GenreStorage genreStorage;
+
+    public FilmTest() {
+    }
+
 
     @BeforeEach
     void beforeEach() {
         film = new Film.FilmBuilder()
-                .id(null)
+                .id(1L)
                 .name("name")
                 .description("")
                 .releaseDate(LocalDate.of(1999, 9, 9))
                 .duration(99L)
+                .mpa(new MPA(3,"PG-13"))
+                .genres(Arrays.asList(new Genre(3, "Мультфильм")))
+                .build();
+
+        film2 = new Film.FilmBuilder()
+                .id(2L)
+                .name("Покемон фильм первый: Мьюту против Мью")
+                .description("Создан первый искусственный покемон")
+                .releaseDate(LocalDate.of(1998, 12, 22))
+                .duration(90L)
+                .mpa(new MPA(2, "PG"))
+                .genres(Arrays.asList(new Genre(3, "Мультфильм")))
                 .build();
     }
 
@@ -57,4 +79,25 @@ public class FilmTest {
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         Assertions.assertEquals("Продолжительность фильма должна быть положительной.", violations.iterator().next().getMessage());
     }
+
+
+//    @Test
+//    void checkCreatFilms(){
+//
+//        filmService.create(film);
+//    }
+
+
+//    @Test
+//    public void testGetGenreById() {
+//        List<Genre> list = Arrays.asList(new Genre(1, "Комедия"),
+//                new Genre(2, "Драма"),
+//                new Genre(3, "Мультфильм"),
+//                new Genre(4, "Триллер"),
+//                new Genre(5, "Документальный"),
+//                new Genre(6, "Боевик"));
+//        for (Genre genre : list) {
+//            assertEquals(genre, genreStorage.findGenreById(genre.getId()));
+//        }
+//    }
 }

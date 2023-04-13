@@ -48,11 +48,24 @@ public class FilmService {
         filmStorage.deleteFilmById(filmId);
     }
 
-    public List<Film> getPopular(int count) {
+    public List<Film> getPopular(int count, Integer genreId, Integer year) {
         return filmStorage.getFilms().stream()
+                .filter(f -> filterPopular(f, genreId, year))
                 .sorted(Comparator.comparingInt(Film::getRate).reversed())
                 .limit(count)
                 .collect(Collectors.toList());
+    }
+
+
+    private boolean filterPopular(Film f, Integer genreId ,Integer year) {
+        if (genreId != null) {
+            return  f.getGenres().stream()
+                    .filter(Genre -> Genre.getId() == genreId).count() == 1;
+        }
+        if (year != null) {
+            return f.getReleaseDate().getYear() == year;
+        }
+        return true;
     }
 
     public void addFilmLike(long filmId, long userId) {
