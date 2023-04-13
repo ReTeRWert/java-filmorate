@@ -4,8 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 
 @Data
 @Builder(toBuilder = true)
