@@ -8,6 +8,9 @@ DROP TABLE IF EXISTS FilmGenre CASCADE;
 DROP TABLE IF EXISTS USER_FEED CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
 DROP TABLE IF EXISTS review_likes CASCADE;
+DROP TABLE IF EXISTS directors CASCADE;
+DROP TABLE IF EXISTS director_films CASCADE;
+
 
 CREATE TABLE IF NOT EXISTS Users (
   user_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -15,6 +18,12 @@ CREATE TABLE IF NOT EXISTS Users (
   name VARCHAR(255),
   email VARCHAR(255),
   birthday DATE
+);
+
+CREATE TABLE IF NOT EXISTS directors
+(
+    director_id     int PRIMARY KEY auto_increment,
+    name   varchar(50) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Friendship (
@@ -44,6 +53,8 @@ CREATE TABLE IF NOT EXISTS Film (
   duration BIGINT,
   rate INT,
   age_id INT,
+  director_id int,
+  FOREIGN KEY(director_id) REFERENCES directors(director_id),
   FOREIGN KEY(age_id) REFERENCES Age_rating(age_id)
 );
 
@@ -95,4 +106,11 @@ CREATE TABLE IF NOT EXISTS review_likes
         FOREIGN KEY (user_id) REFERENCES users ON DELETE CASCADE,
     constraint IF NOT EXISTS REVIEW_LIKES_FK_REVIEW_ID
         foreign key (REVIEW_ID) references REVIEWS on delete cascade
+);
+
+CREATE TABLE IF NOT EXISTS director_films
+(
+    film_id     int REFERENCES Film(film_id),
+    director_id int REFERENCES directors(director_id),
+    PRIMARY KEY (film_id, director_id)
 );
