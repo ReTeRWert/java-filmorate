@@ -37,8 +37,7 @@ public class GenreStorage {
                 " ORDER BY genre_id;";
 
         return jdbcTemplate.query(sql,
-                (rs, rowNum) -> new Genre(rs.getInt("genre_id"), rs.getString("name"))
-                , filmId);
+                (rs, rowNum) -> new Genre(rs.getInt("genre_id"), rs.getString("name")), filmId);
     }
 
     public List<Genre> getGenresByFilm(Long filmId) {
