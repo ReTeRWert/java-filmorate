@@ -63,6 +63,7 @@ public class FilmService {
         }
         return true;
 }
+
     public List<Film> getPopular(int count) {
         return filmStorage.getFilms()
                 .stream()
