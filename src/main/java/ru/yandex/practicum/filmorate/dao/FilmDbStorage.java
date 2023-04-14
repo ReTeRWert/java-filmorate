@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.dao;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -11,8 +11,12 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,7 +28,6 @@ public class FilmDbStorage implements FilmStorage {
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
     private final DirectorStorage directorStorage;
-
 
 
     @Override
@@ -263,27 +266,28 @@ public class FilmDbStorage implements FilmStorage {
                 .mpa(mpaStorage.findMPAById(rs.getInt("age_id")))
                 .directors(directorStorage.findDirectorsByFilm(rs.getLong("film_id")))
                 .build();
-    @Override
-    public List<Film> getCommonFilms(Long userId, Long friendId) {
-        String sql = "SELECT f.film_id " +
-                "FROM Film AS f " +
-                "JOIN Film_like AS l ON f.film_id = l.film_id " +
-                "WHERE f.film_id IN (SELECT film_id " +
-                "FROM Film_like AS l2 " +
-                "WHERE user_id IN (?,?) " +
-                "GROUP BY film_id " +
-                "HAVING COUNT(user_id) = 2) " +
-                "GROUP BY f.film_id " +
-                "ORDER BY f.rate DESC";
-        return jdbcTemplate.queryForList(sql, Integer.class, userId, friendId)
-                .stream()
-                .map(this::findFilmById)
-                .collect(Collectors.toList());
     }
+        @Override
+        public List<Film> getCommonFilms (Long userId, Long friendId){
+            String sql = "SELECT f.film_id " +
+                    "FROM Film AS f " +
+                    "JOIN Film_like AS l ON f.film_id = l.film_id " +
+                    "WHERE f.film_id IN (SELECT film_id " +
+                    "FROM Film_like AS l2 " +
+                    "WHERE user_id IN (?,?) " +
+                    "GROUP BY film_id " +
+                    "HAVING COUNT(user_id) = 2) " +
+                    "GROUP BY f.film_id " +
+                    "ORDER BY f.rate DESC";
+            return jdbcTemplate.queryForList(sql, Integer.class, userId, friendId)
+                    .stream()
+                    .map(this::findFilmById)
+                    .collect(Collectors.toList());
+        }
 
-    @Override
-    public void deleteFilmById(long filmId) {
-        String sql = "DELETE FROM Film WHERE film_id =?";
-        jdbcTemplate.update(sql, filmId);
+        @Override
+        public void deleteFilmById ( long filmId){
+            String sql = "DELETE FROM Film WHERE film_id =?";
+            jdbcTemplate.update(sql, filmId);
+        }
     }
-}
