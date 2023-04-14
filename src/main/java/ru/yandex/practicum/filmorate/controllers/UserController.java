@@ -58,12 +58,6 @@ public class UserController {
         userService.deleteFriend(id, friendId);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) throws RuntimeException {
-        log.debug("Входящий запрос на удаление пользователя с id = {}", id);
-        userService.deleteUserById(id);
-    }
-
     @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) throws RuntimeException {
         log.debug("Входящий запрос на получение информации по пользователю с id = {}", id);

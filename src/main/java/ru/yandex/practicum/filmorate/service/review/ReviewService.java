@@ -12,7 +12,7 @@ import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.FeedEventType;
 import ru.yandex.practicum.filmorate.model.FeedOperation;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.storage.user.FeedStorage;
+import ru.yandex.practicum.filmorate.storage.FeedStorage;
 
 import java.util.List;
 
