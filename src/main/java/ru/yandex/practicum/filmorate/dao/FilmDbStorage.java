@@ -1,7 +1,8 @@
 package ru.yandex.practicum.filmorate.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -12,22 +13,18 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
 @Qualifier
+@RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
-
-    @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaStorage mpaStorage, GenreStorage genreStorage) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.mpaStorage = mpaStorage;
-        this.genreStorage = genreStorage;
-    }
 
     @Override
     public List<Film> getFilms() {
@@ -148,43 +145,46 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film findFilmById(long id) {
-        String sql = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rate, f.age_id, " +
-                "GROUP_CONCAT(DISTINCT g.genre_id ORDER BY g.genre_id ASC SEPARATOR ',') AS genre_ids " +
-                "FROM Film AS f " +
-                "LEFT JOIN FilmGenre AS fg ON f.film_id = fg.film_id " +
-                "LEFT JOIN Genre AS g ON fg.genre_id = g.genre_id " +
-                "WHERE f.film_id = ? " +
-                "GROUP BY f.film_id";
-
-        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, id);
-        if (!rs.next()) {
-            throw new NotFoundException("Фильм не найден.");
+        try {
+            String sqlQuery = "SELECT * FROM FILM as f " +
+                    "WHERE film_id = ?";
+            return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("Фильм с Id " + id + " не найден");
         }
-
-        String genreIds = rs.getString("genre_ids");
-        List<Genre> genres = new ArrayList<>();
-        if (genreIds != null) {
-            String[] genreIdArray = genreIds.split(",");
-            for (String genreId : genreIdArray) {
-                Genre genre = genreStorage.findGenreById(Integer.parseInt(genreId));
-                genres.add(genre);
-            }
-        }
-
-        return Film.builder()
-                .id(rs.getLong("film_id"))
-                .name(rs.getString("name"))
-                .description(rs.getString("description"))
-                .releaseDate(Objects.requireNonNull(rs.getDate("release_date")).toLocalDate())
-                .duration(rs.getLong("duration"))
-                .rate(rs.getInt("rate"))
-                .genres(genres)
-                .mpa(mpaStorage.findMPAById(rs.getInt("age_id")))
-                .build();
     }
 
     public void deleteFilmById(long filmId) {
         String sql = "DELETE FROM Film WHERE film_id =?";
         jdbcTemplate.update(sql, filmId);
+    }
+
+    public List<Film> getRecommendations(Long userId) {
+        String sqlQuery = "SELECT f.* FROM film f " +
+                "JOIN (SELECT DISTINCT l2.film_id, COUNT(*) relevation " +
+                "FROM Film_like l1 " +
+                "LEFT JOIN Film_like l2 ON l1.user_id = l2.user_id " +
+                "WHERE l1.film_id IN (SELECT film_id FROM Film_like WHERE user_id = ?) " +
+                "AND l2.film_id NOT IN (SELECT film_id FROM Film_like WHERE user_id = ?) " +
+                "GROUP BY l1.user_id, l2.film_id " +
+                "ORDER BY relevation DESC) AS r " +
+                "ON r.film_id = f.film_id";
+
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilm, userId, userId);
+    }
+
+
+    private Film mapRowToFilm(ResultSet rs, int rowNum) throws SQLException {
+
+        return Film.builder()
+                .id(rs.getLong("film_id"))
+                .name(rs.getString("name"))
+                .description(rs.getString("description"))
+                .releaseDate(rs.getDate("release_date").toLocalDate())
+                .duration(rs.getLong("duration"))
+                .rate(rs.getInt("rate"))
+                .genres(genreStorage.getFilmGenres(rs.getLong("film_id")))
+                .mpa(mpaStorage.findMPAById(rs.getInt("age_id")))
+                .build();
     }
 }
