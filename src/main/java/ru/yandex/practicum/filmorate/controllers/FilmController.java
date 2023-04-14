@@ -46,6 +46,12 @@ public class FilmController {
         return filmService.getPopular(count);
     }
 
+    @GetMapping("/common")
+    public List<Film> getCommonFilms(@RequestParam(value = "userId") Long userId,
+                                     @RequestParam(value = "friendId") Long friendId) {
+        return filmService.getCommonFilms(userId, friendId);
+    }
+
     @PostMapping
     public Film createFilm(@Validated @RequestBody Film film) throws RuntimeException {
         log.debug("Входящий запрос на создание фильма");

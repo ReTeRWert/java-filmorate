@@ -128,4 +128,11 @@ public class UserDbStorage implements UserStorage {
         String sqlRate = "UPDATE Film SET rate=? WHERE film_id=?";
         jdbcTemplate.update(sqlRate, -1, userId);
     }
+
+    @Override
+    public void deleteUserById(Long userId) {
+        String sql = "DELETE FROM Users " +
+                "WHERE user_id =?";
+        jdbcTemplate.update(sql, userId);
+    }
 }
