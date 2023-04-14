@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,20 +22,13 @@ import java.util.stream.Collectors;
 
 @Repository
 @Qualifier
+@RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
     private final DirectorStorage directorStorage;
 
-    @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaStorage mpaStorage, GenreStorage genreStorage,
-                         DirectorStorage directorStorage) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.mpaStorage = mpaStorage;
-        this.genreStorage = genreStorage;
-        this.directorStorage = directorStorage;
-    }
 
     @Override
     public List<Film> getFilms() {
@@ -83,10 +76,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film create(Film film) {
-        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("Film")
-                .usingGeneratedKeyColumns("film_id");
-
+        SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        jdbcInsert.withTableName("Film").usingGeneratedKeyColumns("film_id");
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", film.getName());
         parameters.put("description", film.getDescription());
@@ -138,9 +129,9 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film updateFilm(Film film) {
         String sqlId = "SELECT film_id " +
-                        "FROM Film " +
-                        "ORDER BY film_id DESC " +
-                        "LIMIT 1";
+                "FROM Film " +
+                "ORDER BY film_id DESC " +
+                "LIMIT 1";
 
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sqlId);
         sqlRowSet.next();
@@ -149,8 +140,8 @@ public class FilmDbStorage implements FilmStorage {
             throw new NotFoundException("Фильм не найден.");
         } else {
             String sql = "UPDATE Film " +
-                         "SET name=?, description=?, release_date=?, duration=?, rate=?, age_id=? " +
-                         "WHERE film_id=?";
+                    "SET name=?, description=?, release_date=?, duration=?, rate=?, age_id=? " +
+                    "WHERE film_id=?";
             jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(),
                     film.getRate(), film.getMpa().getId(), film.getId());
 
@@ -160,8 +151,8 @@ public class FilmDbStorage implements FilmStorage {
 
                 Set<Integer> existingGenreIds = new HashSet<>();
                 String sqlGenreIds = "SELECT genre_id  " +
-                                     "FROM FilmGenre " +
-                                     "WHERE film_id=?";
+                        "FROM FilmGenre " +
+                        "WHERE film_id=?";
                 SqlRowSet rsGenreIds = jdbcTemplate.queryForRowSet(sqlGenreIds, film.getId());
 
                 while (rsGenreIds.next()) {
@@ -176,8 +167,8 @@ public class FilmDbStorage implements FilmStorage {
 
                 if (!genreIdsToRemove.isEmpty()) {
                     String sqlDeleteGenres = "DELETE " +
-                                             "FROM FilmGenre " +
-                                             "WHERE film_id=? AND genre_id IN (%s)";
+                            "FROM FilmGenre " +
+                            "WHERE film_id=? AND genre_id IN (%s)";
 
                     String genreIdsToRemoveStr = genreIdsToRemove.stream().map(String::valueOf)
                             .collect(Collectors.joining(", "));
@@ -279,11 +270,6 @@ public class FilmDbStorage implements FilmStorage {
                 .build();
     }
 
-    public void deleteFilmById(long filmId) {
-        String sql = "DELETE FROM Film WHERE film_id =?";
-        jdbcTemplate.update(sql, filmId);
-    }
-
     @Override
     public List<Film> getCommonFilms(Long userId, Long friendId) {
         String sql = "SELECT f.film_id " +
@@ -300,5 +286,11 @@ public class FilmDbStorage implements FilmStorage {
                 .stream()
                 .map(this::findFilmById)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteFilmById(long filmId) {
+        String sql = "DELETE FROM Film WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
     }
 }

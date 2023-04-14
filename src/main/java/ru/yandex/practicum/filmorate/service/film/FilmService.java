@@ -9,8 +9,8 @@ import ru.yandex.practicum.filmorate.model.FeedEventType;
 import ru.yandex.practicum.filmorate.model.FeedOperation;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Comparator;
@@ -65,6 +65,15 @@ public class FilmService {
             return f.getReleaseDate().getYear() == year;
         }
         return true;
+}
+
+    public List<Film> getPopular(int count) {
+        return filmStorage.getFilms()
+                .stream()
+                .sorted(Comparator.comparingInt(Film::getRate)
+                .reversed())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     public void addFilmLike(long filmId, long userId) {
@@ -85,6 +94,31 @@ public class FilmService {
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() - 1);
         userStorage.findUserById(userId).getFilmsLike().remove(filmId);
+
+        feedStorage.addFeed(Feed.builder()
+                .operation(FeedOperation.REMOVE)
+                .eventType(FeedEventType.LIKE)
+                .entityId(filmId)
+                .userId(userId)
+                .build());
+    }
+
+    public List<Film> getDirectorFilms(Long directorId, String sortBy) {
+
+        if (!(sortBy.equals("year") || sortBy.equals("likes"))) {
+            throw new IllegalArgumentException("Сортировка возможна либо по годам, либо по количеству лайков");
+        }
+
+        if (directorStorage.getDirector(directorId) == null) {
+            throw new IllegalArgumentException("Режиссер не найден.");
+        }
+
+        return filmStorage.getDirectorFilms(directorId, sortBy);
+    }
+
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+
+        return filmStorage.getCommonFilms(userId, friendId);
         feedStorage.addFeed(Feed.builder()
                 .operation(FeedOperation.REMOVE)
                 .eventType(FeedEventType.LIKE)

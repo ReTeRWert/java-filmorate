@@ -10,8 +10,8 @@ import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.FeedEventType;
 import ru.yandex.practicum.filmorate.model.FeedOperation;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
+import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.Collection;
@@ -73,6 +73,10 @@ public class UserService {
             feedStorage.addFeed(Feed.builder().operation(FeedOperation.REMOVE).eventType(FeedEventType.FRIEND).entityId(friendId).userId(userId).build());
             return userStorage.update(user);
         }
+    }
+
+    public void deleteUserById(Long userId) {
+        userStorage.deleteUserById(userId);
     }
 
     public User get(Long userId) throws NotFoundException {
