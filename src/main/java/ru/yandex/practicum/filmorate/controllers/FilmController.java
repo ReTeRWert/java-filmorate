@@ -12,6 +12,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -43,6 +44,12 @@ public class FilmController {
     public Collection<Film> getPopular(@RequestParam(defaultValue = "10") int count) {
         log.debug("Входящий запрос на получение первых {} популярных фильмов", count);
         return filmService.getPopular(count);
+    }
+
+    @GetMapping("/common")
+    public List<Film> getCommonFilms(@RequestParam(value = "userId") Long userId,
+                                     @RequestParam(value = "friendId") Long friendId) {
+        return filmService.getCommonFilms(userId, friendId);
     }
 
     @PostMapping

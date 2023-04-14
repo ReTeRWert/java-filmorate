@@ -72,4 +72,9 @@ public class FilmService {
         userStorage.findUserById(userId).getFilmsLike().remove(filmId);
         feedStorage.addFeed(Feed.builder().operation(FeedOperation.REMOVE).eventType(FeedEventType.LIKE).entityId(filmId).userId(userId).build());
     }
+
+    public List<Film> getCommonFilms(Long userId, Long friendId) {
+
+        return filmStorage.getCommonFilms(userId, friendId);
+    }
 }
