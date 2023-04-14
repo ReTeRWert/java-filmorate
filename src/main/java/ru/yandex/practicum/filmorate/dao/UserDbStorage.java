@@ -140,7 +140,7 @@ public class UserDbStorage implements UserStorage {
         jdbcTemplate.update(sql, userId);
 
         sql = "DELETE FROM Users " +
-                     "WHERE user_id =?";
+                "WHERE user_id =?";
         jdbcTemplate.update(sql, userId);
     }
 }

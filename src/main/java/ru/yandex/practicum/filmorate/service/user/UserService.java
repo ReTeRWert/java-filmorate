@@ -117,11 +117,4 @@ public class UserService {
             return feedStorage.getFeed(userId);
         }
     }
-
-    public void deleteUserById(Long userId) throws NotFoundException {
-        if (userStorage.findUserById(userId) == null) {
-            throw new NotFoundException("Пользователь с идентификатором: " + userId + " не найден.");
-        }
-        userStorage.deleteUserById(userId);
-    }
 }

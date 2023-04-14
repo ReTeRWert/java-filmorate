@@ -17,6 +17,7 @@ public class DirectorController {
 
     @PostMapping
     public Director create(@Valid @RequestBody Director director) {
+        log.info("Создан режиссер: {}", director);
         return directorService.createDirector(director);
     }
 
