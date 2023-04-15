@@ -2,6 +2,8 @@ package ru.yandex.practicum.filmorate.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -13,6 +15,9 @@ import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.DirectorStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,13 +29,6 @@ public class FilmDbStorage implements FilmStorage {
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
     private final DirectorStorage directorStorage;
-
-    @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, MpaStorage mpaStorage, GenreStorage genreStorage) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.mpaStorage = mpaStorage;
-        this.genreStorage = genreStorage;
-    }
 
     @Override
     public List<Film> getFilms() {
