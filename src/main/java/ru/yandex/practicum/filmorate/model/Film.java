@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.DateFilm;
@@ -14,6 +15,7 @@ import static ru.yandex.practicum.filmorate.model.Constants.MAX_LENGTH_DESCRIPTI
 
 @Data
 @Builder(toBuilder = true)
+@AllArgsConstructor
 public class Film {
     private int rate;
     private Long id;

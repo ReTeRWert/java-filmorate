@@ -116,7 +116,5 @@ public class ReviewService {
         } else {
             reviewLikeDbStorage.deleteDislike(reviewId, userId);
         }
-
-
     }
 }
