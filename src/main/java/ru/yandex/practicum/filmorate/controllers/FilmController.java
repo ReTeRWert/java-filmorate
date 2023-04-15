@@ -86,6 +86,14 @@ public class FilmController {
         return filmService.getDirectorFilms(directorId, sortBy);
     }
 
+    @GetMapping("/search")
+    public Collection<Film> getSearchFilms(
+            @RequestParam(defaultValue = "") String query,
+            @RequestParam(defaultValue = "") String by,
+            @RequestParam(defaultValue = "10") int count) {
+        return filmService.getSearchFilms(query, by, count);
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserNotFound(final NotFoundException e) {
