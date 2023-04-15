@@ -32,6 +32,14 @@ public class GenreStorage {
         return genreList;
     }
 
+    public List<Genre> getFilmGenres(long filmId) {
+        String sql = "SELECT * FROM Genre WHERE genre_id IN (SELECT genre_id FROM FilmGenre WHERE film_id = ?) " +
+                " ORDER BY genre_id;";
+
+        return jdbcTemplate.query(sql,
+                (rs, rowNum) -> new Genre(rs.getInt("genre_id"), rs.getString("name")), filmId);
+    }
+
     public List<Genre> getGenresByFilm(Long filmId) {
         String sql = "SELECT * " +
                 "FROM genre AS g " +

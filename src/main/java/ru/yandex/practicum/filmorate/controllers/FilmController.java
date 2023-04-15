@@ -97,7 +97,4 @@ public class FilmController {
     public ErrorResponse handleServerError(final RuntimeException e) {
         return new ErrorResponse(e.getMessage());
     }
-
-
 }
-
