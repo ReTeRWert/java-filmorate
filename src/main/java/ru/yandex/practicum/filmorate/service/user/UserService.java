@@ -1,15 +1,12 @@
 package ru.yandex.practicum.filmorate.service.user;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.model.Feed;
-import ru.yandex.practicum.filmorate.model.FeedEventType;
-import ru.yandex.practicum.filmorate.model.FeedOperation;
-import ru.yandex.practicum.filmorate.model.User;
+
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -20,17 +17,11 @@ import java.util.List;
 @Data
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
     private final FeedStorage feedStorage;
-
-    @Autowired
-    public UserService(@Qualifier("userDbStorage") UserStorage userStorage, @Qualifier("filmDbStorage") FilmStorage filmStorage, FeedStorage feedStorage) {
-        this.userStorage = userStorage;
-        this.filmStorage = filmStorage;
-        this.feedStorage = feedStorage;
-    }
 
     public User create(User user) {
         userStorage.create(user);
@@ -60,7 +51,7 @@ public class UserService {
         }
     }
 
-    public User deleteFriend(Long userId, Long friendId) throws NotFoundException {
+    public void deleteFriend(Long userId, Long friendId) throws NotFoundException {
         User user = userStorage.findUserById(userId);
         User friend = userStorage.findUserById(friendId);
 
@@ -71,7 +62,7 @@ public class UserService {
         } else {
             userStorage.removeFriend(userId, friendId);
             feedStorage.addFeed(Feed.builder().operation(FeedOperation.REMOVE).eventType(FeedEventType.FRIEND).entityId(friendId).userId(userId).build());
-            return userStorage.update(user);
+            userStorage.update(user);
         }
     }
 
@@ -120,5 +111,9 @@ public class UserService {
         } else {
             return feedStorage.getFeed(userId);
         }
+    }
+
+    public Collection<Film> getRecommendations(long userId) {
+        return filmStorage.getRecommendations(userId);
     }
 }
