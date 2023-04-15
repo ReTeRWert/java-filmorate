@@ -219,19 +219,19 @@ public class FilmDbStorage implements FilmStorage {
         String sq = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rate,age_id, " + "COUNT(l.user_id) AS COUNT " + "FROM FILM f " + "LEFT JOIN FilmGenre fg on f.film_id = fg.film_id " + "LEFT JOIN Film_like l on f.film_id = l.film_id {} GROUP BY f.film_id ORDER BY COUNT DESC LIMIT ?";
         if (genreId == null && year == null) {
             return jdbcTemplate.query(sq.replace("{}",
-                    ""),
+                            ""),
                     this::mapRowToFilm, limit);
         } else if (genreId == null) {
             return jdbcTemplate.query(sq.replace("{}",
-                    "WHERE EXTRACT(YEAR FROM release_date) = ?"),
+                            "WHERE EXTRACT(YEAR FROM release_date) = ?"),
                     this::mapRowToFilm, year, limit);
         } else if (year == null) {
             return jdbcTemplate.query(sq.replace("{}",
-                    "WHERE genre_id = ?"),
+                            "WHERE genre_id = ?"),
                     this::mapRowToFilm, genreId, limit);
         } else {
             return jdbcTemplate.query(sq.replace("{}",
-                    "WHERE genre_id = ? " + "AND EXTRACT(YEAR FROM release_date) = ? "),
+                            "WHERE genre_id = ? " + "AND EXTRACT(YEAR FROM release_date) = ? "),
                     this::mapRowToFilm, genreId, year, limit);
         }
     }

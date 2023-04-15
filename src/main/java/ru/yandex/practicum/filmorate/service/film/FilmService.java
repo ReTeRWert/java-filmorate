@@ -13,9 +13,7 @@ import ru.yandex.practicum.filmorate.storage.FeedStorage;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Data
@@ -50,7 +48,7 @@ public class FilmService {
 
 
     public List<Film> getPopular(int count, Integer genreId, Integer year) {
-        return filmStorage.getPopular(count,genreId,year);
+        return filmStorage.getPopular(count, genreId, year);
     }
 
 
