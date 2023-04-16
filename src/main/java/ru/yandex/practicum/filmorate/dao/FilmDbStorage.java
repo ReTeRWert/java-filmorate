@@ -212,7 +212,6 @@ public class FilmDbStorage implements FilmStorage {
 
 
     private Film mapRowToFilm(ResultSet rs, int rowNum) throws SQLException {
-
         return Film.builder().
                 id(rs.getLong("film_id")).
                 name(rs.getString("name")).
@@ -295,11 +294,11 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM Film AS f " +
                 "LEFT JOIN FilmGenre AS fg ON f.film_id = fg.film_id " +
                 "LEFT JOIN Genre AS g ON fg.genre_id = g.genre_id " +
-                "LEFT JOIN director_films AS df ON f.film_id = df.director_id " +
+                "LEFT JOIN director_films AS df ON f.film_id = df.film_id " +
                 "LEFT JOIN directors AS d on d.director_id = df.director_id " +
                 searchFilms(query, by) +
                 "GROUP BY f.film_id " +
-                "ORDER BY rate DESC " +
+                "ORDER BY rate ASC " +
                 "LIMIT ?;";
         return jdbcTemplate.query(sql, ((rs, rowNum) -> makeFilm(rs)), count);
     }
@@ -308,12 +307,12 @@ public class FilmDbStorage implements FilmStorage {
         List<String> searchBy = List.of(by.split(","));
         if (searchBy.size() == 1) {
             switch (searchBy.get(0)) {
-                case "title":
-                    return "WHERE LOWER(f.name) LIKE LOWER('%" + query + "%') ";
                 case "director":
                     return "WHERE LOWER(d.name) LIKE LOWER('%" + query + "%') ";
+                case "title":
+                    return "WHERE LOWER(f.name) LIKE LOWER('%" + query + "%') ";
             }
         }
-            return "WHERE LOWER(d.name) LIKE LOWER('%" + query + "%') OR LOWER(f.name) LIKE LOWER('%" + query + "%') ";
+        return "WHERE LOWER(d.name) LIKE LOWER('%" + query + "%') OR LOWER(f.name) LIKE LOWER('%" + query + "%') ";
     }
 }

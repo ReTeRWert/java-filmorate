@@ -82,7 +82,6 @@ public class FilmController {
     @GetMapping("/director/{directorId}")
     public List<Film> getDirectorFilms(@PathVariable Long directorId,
                                        @RequestParam(defaultValue = "likes", required = false) String sortBy) {
-
         return filmService.getDirectorFilms(directorId, sortBy);
     }
 
@@ -91,6 +90,8 @@ public class FilmController {
             @RequestParam(defaultValue = "") String query,
             @RequestParam(defaultValue = "") String by,
             @RequestParam(defaultValue = "10") int count) {
+        log.debug("Входящий запрос на поиск фильма парметры запрос: '{}' запрос поиска: '{}' количесвто фильмов: '{}'",
+                query, by, count);
         return filmService.getSearchFilms(query, by, count);
     }
 
