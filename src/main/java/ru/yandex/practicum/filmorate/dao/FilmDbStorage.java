@@ -199,7 +199,20 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public void deleteFilmById(long filmId) {
-        String sql = "DELETE FROM Film WHERE film_id =?";
+
+        String sql = "DELETE FROM FilmGenre WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
+
+        sql = "DELETE FROM director_films WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
+
+        sql = "DELETE FROM reviews WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
+
+        sql = "DELETE FROM Film_like WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
+
+        sql = "DELETE FROM Film WHERE film_id =?";
         jdbcTemplate.update(sql, filmId);
     }
 
