@@ -122,4 +122,8 @@ public class FilmService {
 
         return filmStorage.getCommonFilms(userId, friendId);
     }
+
+    public List<Film> getSearchFilms(String query, String by, int count) {
+        return filmStorage.getSearchFilms(query, by, count);
+    }
 }
