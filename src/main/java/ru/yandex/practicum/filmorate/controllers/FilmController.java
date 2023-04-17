@@ -65,6 +65,7 @@ public class FilmController {
         log.debug("Входящий запрос на удаление фильма с id = {}", id);
         filmService.deleteFilmById(id);
     }
+
     @PutMapping
     public Film updateFilm(@Validated @RequestBody Film film) throws NotFoundException {
         log.debug("Входящий запрос на редактирование фильма");
