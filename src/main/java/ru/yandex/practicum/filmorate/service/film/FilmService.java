@@ -53,7 +53,6 @@ public class FilmService {
         filmStorage.deleteFilmById(filmId);
     }
 
-
     public List<Film> getPopular(int count, Integer genreId, Integer year) {
         return filmStorage.getPopular(count, genreId, year);
     }
@@ -64,7 +63,12 @@ public class FilmService {
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() + 1);
         userStorage.findUserById(userId).getFilmsLike().add(filmId);
-        feedStorage.addFeed(Feed.builder().operation(FeedOperation.ADD).eventType(FeedEventType.LIKE).entityId(filmId).userId(userId).build());
+        feedStorage.addFeed(Feed.builder()
+                .operation(FeedOperation.ADD)
+                .eventType(FeedEventType.LIKE)
+                .entityId(filmId)
+                .userId(userId)
+                .build());
     }
 
     public void removeFilmLike(long filmId, long userId) {
@@ -72,7 +76,12 @@ public class FilmService {
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() - 1);
         userStorage.findUserById(userId).getFilmsLike().remove(filmId);
-        feedStorage.addFeed(Feed.builder().operation(FeedOperation.REMOVE).eventType(FeedEventType.LIKE).entityId(filmId).userId(userId).build());
+        feedStorage.addFeed(Feed.builder()
+                .operation(FeedOperation.REMOVE)
+                .eventType(FeedEventType.LIKE)
+                .entityId(filmId)
+                .userId(userId)
+                .build());
     }
 
     public List<Film> getDirectorFilms(Long directorId, String sortBy) {
