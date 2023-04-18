@@ -34,8 +34,8 @@ public class FilmTest {
                 .description("")
                 .releaseDate(LocalDate.of(1999, 9, 9))
                 .duration(90L)
-                .mpa(new MPA(3, "PG-13"))
-                .genres(Arrays.asList(new Genre(3, "Мультфильм")))
+                .mpa(new MPA(3L, "PG-13"))
+                .genres(Arrays.asList(new Genre(3L, "Мультфильм")))
                 .build();
 
         film2 = new Film.FilmBuilder()
@@ -44,8 +44,8 @@ public class FilmTest {
                 .description("Создан первый искусственный покемон")
                 .releaseDate(LocalDate.of(1998, 12, 22))
                 .duration(90L)
-                .mpa(new MPA(2, "PG"))
-                .genres(Arrays.asList(new Genre(3, "Мультфильм")))
+                .mpa(new MPA(2L, "PG"))
+                .genres(Arrays.asList(new Genre(3L, "Мультфильм")))
                 .build();
     }
 

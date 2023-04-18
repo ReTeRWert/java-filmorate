@@ -20,12 +20,18 @@ public class GenreStorage {
     public GenreStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         String sql = "SELECT * FROM Genre";
-        genreList.addAll(jdbcTemplate.query(sql, (rs, rowNum) -> new Genre(rs.getInt("genre_id"),
+        genreList.addAll(jdbcTemplate.query(sql, (rs, rowNum) -> new Genre(rs.getLong("genre_id"),
                 rs.getString("name"))));
     }
 
     public Genre findGenreById(int id) {
-        return genreList.stream().filter(genre -> genre.getId() == id).findFirst().orElse(null);
+        String sql = "SELECT * FROM Genre " +
+                "WHERE genre_id = ?";
+        List<Genre> genres = jdbcTemplate.query(sql, (rs, rowNum) -> makeGenre(rs), id);
+        if (genres.isEmpty()) {
+            return null;
+        }
+        return genres.get(0);
     }
 
     public List<Genre> getGenreList() {
@@ -37,7 +43,7 @@ public class GenreStorage {
                 " ORDER BY genre_id;";
 
         return jdbcTemplate.query(sql,
-                (rs, rowNum) -> new Genre(rs.getInt("genre_id"), rs.getString("name")), filmId);
+                (rs, rowNum) -> new Genre(rs.getLong("genre_id"), rs.getString("name")), filmId);
     }
 
     public List<Genre> getGenresByFilm(Long filmId) {
@@ -50,7 +56,7 @@ public class GenreStorage {
     }
 
     private Genre makeGenre(ResultSet rs) throws SQLException {
-        return new Genre(rs.getInt("genre_id"),
+        return new Genre(rs.getLong("genre_id"),
                 rs.getString("name"));
     }
 }

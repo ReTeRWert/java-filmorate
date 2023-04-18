@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -29,10 +28,16 @@ public class FilmDbStorage implements FilmStorage {
     private final MpaStorage mpaStorage;
     private final GenreStorage genreStorage;
     private final DirectorStorage directorStorage;
+    private final FilmExtractor filmExtractor;
 
     @Override
     public List<Film> getFilms() {
-        String sql = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rate, f.age_id, " + "GROUP_CONCAT(DISTINCT g.genre_id ORDER BY g.genre_id ASC SEPARATOR ',') AS genre_ids " + "FROM Film AS f " + "LEFT JOIN FilmGenre AS fg ON f.film_id = fg.film_id " + "LEFT JOIN Genre AS g ON fg.genre_id = g.genre_id " + "GROUP BY f.film_id " + "ORDER BY f.film_id ASC";
+        String sql = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rate, f.age_id, " +
+                "GROUP_CONCAT(DISTINCT g.genre_id ORDER BY g.genre_id ASC SEPARATOR ',') AS genre_ids " +
+                "FROM Film AS f " + "LEFT JOIN FilmGenre AS fg ON f.film_id = fg.film_id " +
+                "LEFT JOIN Genre AS g ON fg.genre_id = g.genre_id " +
+                "GROUP BY f.film_id " +
+                "ORDER BY f.film_id ASC";
         List<Film> films = new ArrayList<>();
         Map<Long, List<Genre>> genreMap = new HashMap<>();
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
@@ -136,7 +141,7 @@ public class FilmDbStorage implements FilmStorage {
             jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getRate(), film.getMpa().getId(), film.getId());
 
             if (film.getGenres() != null) {
-                Set<Integer> updatedGenreIds = new HashSet<>();
+                Set<Long> updatedGenreIds = new HashSet<>();
                 film.getGenres().forEach(g -> updatedGenreIds.add(g.getId()));
 
                 Set<Integer> existingGenreIds = new HashSet<>();
@@ -152,7 +157,7 @@ public class FilmDbStorage implements FilmStorage {
                 Set<Integer> genreIdsToRemove = new HashSet<>(existingGenreIds);
                 genreIdsToRemove.removeAll(updatedGenreIds);
 
-                Set<Integer> genreIdsToAdd = new HashSet<>(updatedGenreIds);
+                Set<Long> genreIdsToAdd = new HashSet<>(updatedGenreIds);
                 genreIdsToAdd.removeAll(existingGenreIds);
 
                 if (!genreIdsToRemove.isEmpty()) {
@@ -176,7 +181,7 @@ public class FilmDbStorage implements FilmStorage {
                 while (rs.next()) {
                     updatedGenres.add(genreStorage.findGenreById(rs.getInt("genre_id")));
                 }
-                updatedGenres.sort(Comparator.comparingInt(Genre::getId));
+                updatedGenres.sort(Comparator.comparingLong(Genre::getId));
                 film.setGenres(updatedGenres);
             } else {
                 film.setGenres(new ArrayList<>());
@@ -190,12 +195,21 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film findFilmById(long id) {
-        try {
-            String sqlQuery = "SELECT * FROM FILM as f " + "WHERE film_id = ?";
-            return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("Фильм с Id " + id + " не найден");
+        String sqlQuery = "SELECT f.*, ar.AGE_ID, ar.NAME AS AGE_NAME, f2.GENRE_ID, g.NAME AS GENRE_NAME, fl.USER_ID AS LIKE_USER_ID, RATE, df.DIRECTOR_ID, d.NAME AS DIRECTOR_NAME " +
+                "FROM FILM f " +
+                "LEFT JOIN FILMGENRE f2 ON f.FILM_ID = f2.FILM_ID " +
+                "LEFT JOIN GENRE g ON f2.GENRE_ID = g.GENRE_ID " +
+                "LEFT JOIN FILM_LIKE fl ON f.FILM_ID = fl.FILM_ID " +
+                "LEFT JOIN AGE_RATING ar ON f.AGE_ID = ar.AGE_ID " +
+                "LEFT JOIN DIRECTOR_FILMS df ON df.FILM_ID = f.FILM_ID " +
+                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = df.DIRECTOR_ID " +
+                "WHERE f.FILM_ID = ?";
+
+        List<Film> films = jdbcTemplate.query(sqlQuery, filmExtractor, id);
+        if (films.isEmpty()) {
+            return null;
         }
+        return films.get(0);
     }
 
     public void deleteFilmById(long filmId) {
@@ -240,75 +254,95 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> getDirectorFilms(Long directorId, String sortBy) {
         String sql;
         if (sortBy.equals("year")) {
-            sql = "SELECT * " + "FROM film WHERE film_id IN (SELECT film_id " +
-                    "FROM director_films " + "WHERE director_id =? )" +
+            sql = "SELECT f.*, ar.NAME AS AGE_NAME, f2.GENRE_ID, g.NAME AS GENRE_NAME, RATE, df.DIRECTOR_ID, d.NAME AS DIRECTOR_NAME " +
+                    "FROM film f " +
+                    "LEFT JOIN FILMGENRE f2 ON f.FILM_ID = f2.FILM_ID " +
+                    "LEFT JOIN GENRE g ON f2.GENRE_ID = g.GENRE_ID " +
+                    "LEFT JOIN AGE_RATING ar ON f.AGE_ID = ar.AGE_ID " +
+                    "LEFT JOIN DIRECTOR_FILMS df ON df.FILM_ID = f.FILM_ID " +
+                    "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = df.DIRECTOR_ID " +
+                    "WHERE f.film_id IN (SELECT film_id " +
+                    "FROM director_films WHERE director_id = ?) " +
                     "ORDER BY release_date";
         } else {
-            sql = "SELECT * " + "FROM film WHERE film_id IN (SELECT film_id " +
-                    "FROM director_films " + "WHERE director_id =? )" +
+            sql = "SELECT f.*, ar.NAME AS AGE_NAME, f2.GENRE_ID, g.NAME AS GENRE_NAME, RATE, df.DIRECTOR_ID, d.NAME AS DIRECTOR_NAME " +
+                    "FROM film f " +
+                    "LEFT JOIN FILMGENRE f2 ON f.FILM_ID = f2.FILM_ID " +
+                    "LEFT JOIN GENRE g ON f2.GENRE_ID = g.GENRE_ID " +
+                    "LEFT JOIN AGE_RATING ar ON f.AGE_ID = ar.AGE_ID " +
+                    "LEFT JOIN DIRECTOR_FILMS df ON df.FILM_ID = f.FILM_ID " +
+                    "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = df.DIRECTOR_ID " +
+                    "WHERE f.film_id IN (SELECT film_id " +
+                    "FROM director_films WHERE director_id = ?) " +
                     "ORDER BY rate DESC";
         }
 
-        return jdbcTemplate.query(sql, ((rs, rowNum) -> makeFilm(rs)), directorId);
-    }
-
-    private Film makeFilm(ResultSet rs) throws SQLException {
-        return Film.builder().id(rs.getLong("film_id")).name(rs.getString("name")).description(rs.getString("description")).releaseDate(Objects.requireNonNull(rs.getDate("release_date")).toLocalDate()).duration(rs.getLong("duration")).rate(rs.getInt("rate")).genres(genreStorage.getGenresByFilm(rs.getLong("film_id"))).mpa(mpaStorage.findMPAById(rs.getInt("age_id"))).directors(directorStorage.findDirectorsByFilm(rs.getLong("film_id"))).build();
+        return jdbcTemplate.query(sql, filmExtractor, directorId);
     }
 
     @Override
     public List<Film> getCommonFilms(Long userId, Long friendId) {
-        String sql = "SELECT f.film_id " +
-                "FROM Film AS f " +
-                "JOIN Film_like AS l ON f.film_id = l.film_id " +
-                "WHERE f.film_id IN (SELECT film_id " +
-                "FROM Film_like AS l2 " +
-                "WHERE user_id IN (?,?) " +
-                "GROUP BY film_id " +
-                "HAVING COUNT(user_id) = 2) " +
-                "GROUP BY f.film_id " +
+        String sql = "SELECT DISTINCT f.*, ar.AGE_ID, ar.NAME AS AGE_NAME, f2.GENRE_ID, g.NAME AS GENRE_NAME, RATE, df.DIRECTOR_ID, d.NAME AS DIRECTOR_NAME " +
+                "FROM FILM f  " +
+                "LEFT JOIN FILMGENRE f2 ON f.FILM_ID = f2.FILM_ID  " +
+                "LEFT JOIN GENRE g ON f2.GENRE_ID = g.GENRE_ID " +
+                "LEFT JOIN FILM_LIKE fl ON f.FILM_ID = fl.FILM_ID  " +
+                "LEFT JOIN AGE_RATING ar ON f.AGE_ID = ar.AGE_ID  " +
+                "LEFT JOIN DIRECTOR_FILMS df ON df.FILM_ID = f.FILM_ID  " +
+                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = df.DIRECTOR_ID " +
+                "WHERE f.film_id IN (SELECT film_id  " +
+                "FROM Film_like AS l2  " +
+                "WHERE user_id IN (?,?)  " +
+                "GROUP BY film_id  " +
+                "HAVING COUNT(user_id) = 2)  " +
                 "ORDER BY f.rate DESC";
-        return jdbcTemplate.queryForList(sql, Integer.class, userId, friendId).stream().map(this::findFilmById).collect(Collectors.toList());
+        return jdbcTemplate.query(sql, filmExtractor, userId, friendId);
     }
 
     @Override
     public List<Film> getPopular(Integer limit, Integer genreId, Integer year) {
-        String sq = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rate,age_id, " +
-                "COUNT(l.user_id) AS COUNT " +
-                "FROM FILM f " +
-                "LEFT JOIN FilmGenre fg on f.film_id = fg.film_id " +
-                "LEFT JOIN Film_like l on f.film_id = l.film_id {} GROUP BY f.film_id " +
-                "ORDER BY rate DESC " +
-                "LIMIT ?";
+        String sq = "SELECT f.*, m.AGE_ID, m.NAME AS AGE_NAME, fg.GENRE_ID, g.NAME AS GENRE_NAME, df.DIRECTOR_ID, d.NAME AS DIRECTOR_NAME " +
+                "FROM ( SELECT COUNT(USER_ID) AS LIKE_USER_COUNT, f.* " +
+                "FROM FILM_LIKE fl " +
+                "RIGHT JOIN FILM f ON f.FILM_ID = fl.FILM_ID " +
+                "GROUP BY f.FILM_ID " +
+                "ORDER BY LIKE_USER_COUNT DESC " +
+                "LIMIT ?) AS f " +
+                "LEFT JOIN FILMGENRE fg ON f.FILM_ID = fg.FILM_ID " +
+                "LEFT JOIN GENRE g ON fg.GENRE_ID = g.GENRE_ID " +
+                "LEFT JOIN FILM_LIKE fl ON f.FILM_ID = fl.FILM_ID " +
+                "LEFT JOIN AGE_RATING m ON f.AGE_ID = m.AGE_ID " +
+                "LEFT JOIN DIRECTOR_FILMS df ON df.FILM_ID = f.FILM_ID " +
+                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = df.DIRECTOR_ID {}";
         if (genreId == null && year == null) {
             return jdbcTemplate.query(sq.replace("{}", ""),
-                    this::mapRowToFilm, limit);
+                    filmExtractor, limit);
         } else if (genreId == null) {
-            return jdbcTemplate.query(sq.replace("{}", "WHERE EXTRACT(YEAR FROM release_date) = ?"),
-                    this::mapRowToFilm, year, limit);
+            return jdbcTemplate.query(sq.replace("{}", "WHERE EXTRACT(YEAR FROM f.release_date) = ?"),
+                    filmExtractor, limit, year);
         } else if (year == null) {
-            return jdbcTemplate.query(sq.replace("{}", "WHERE genre_id = ?"),
-                    this::mapRowToFilm, genreId, limit);
+            return jdbcTemplate.query(sq.replace("{}", "WHERE fg.genre_id = ?"),
+                    filmExtractor, limit, genreId);
         } else {
-            return jdbcTemplate.query(sq.replace("{}", "WHERE genre_id = ? " +
-                            "AND EXTRACT(YEAR FROM release_date) = ? "),
-                    this::mapRowToFilm, genreId, year, limit);
+            return jdbcTemplate.query(sq.replace("{}", "WHERE fg.genre_id = ? " +
+                            "AND EXTRACT(YEAR FROM f.release_date) = ? "),
+                    filmExtractor, limit, genreId, year);
         }
     }
 
     @Override
     public List<Film> getSearchFilms(String query, String by, int count) {
-        String sql = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rate, f.age_id, " +
-                "GROUP_CONCAT(DISTINCT g.genre_id ORDER BY g.genre_id ASC SEPARATOR ',') AS genre_ids, d.name " +
-                "FROM Film AS f " + "LEFT JOIN FilmGenre AS fg ON f.film_id = fg.film_id " +
+        String sql = "SELECT f.film_id, f.rate, f.name, f.description, f.release_date, f.duration, f.rate, f.age_id,ar.NAME AS AGE_NAME, g.GENRE_ID, g.NAME AS GENRE_NAME, d.DIRECTOR_ID, d.NAME AS DIRECTOR_NAME " +
+                "FROM Film AS f " +
+                "LEFT JOIN FilmGenre AS fg ON f.film_id = fg.film_id " +
                 "LEFT JOIN Genre AS g ON fg.genre_id = g.genre_id " +
                 "LEFT JOIN director_films AS df ON f.film_id = df.film_id " +
                 "LEFT JOIN directors AS d on d.director_id = df.director_id " +
+                "LEFT JOIN AGE_RATING ar ON f.AGE_ID = ar.AGE_ID " +
                 searchFilms(query, by) +
-                "GROUP BY f.film_id " +
                 "ORDER BY rate ASC " +
-                "LIMIT ?;";
-        return jdbcTemplate.query(sql, ((rs, rowNum) -> makeFilm(rs)), count);
+                "LIMIT ?";
+        return jdbcTemplate.query(sql, filmExtractor, count);
     }
 
     private String searchFilms(String query, String by) {
@@ -316,11 +350,11 @@ public class FilmDbStorage implements FilmStorage {
         if (searchBy.size() == 1) {
             switch (searchBy.get(0)) {
                 case "title":
-                    return "WHERE LOWER(f.name) LIKE LOWER('%" + query + "%') ";
+                    return " WHERE LOWER(f.name) LIKE LOWER('%" + query + "%') ";
                 case "director":
-                    return "WHERE LOWER(d.name) LIKE LOWER('%" + query + "%') ";
+                    return " WHERE LOWER(d.name) LIKE LOWER('%" + query + "%') ";
             }
         }
-            return "WHERE LOWER(d.name) LIKE LOWER('%" + query + "%') OR LOWER(f.name) LIKE LOWER('%" + query + "%') ";
+        return " WHERE LOWER(d.name) LIKE LOWER('%" + query + "%') OR LOWER(f.name) LIKE LOWER('%" + query + "%') ";
     }
 }
