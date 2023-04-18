@@ -131,16 +131,36 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void deleteUserById(Long userId) {
-        String sql = "DELETE FROM Film_like " +
-                "WHERE user_id =?";
+
+        String sql = "DELETE FROM Friendship " +
+                "WHERE friend_id =?";
         jdbcTemplate.update(sql, userId);
 
         sql = "DELETE FROM Friendship " +
                 "WHERE user_id =?";
         jdbcTemplate.update(sql, userId);
 
+        sql = "DELETE FROM Film_like " +
+                "WHERE user_id =?";
+        jdbcTemplate.update(sql, userId);
+
+        sql = "DELETE FROM review_likes " +
+                "WHERE user_id =?";
+        jdbcTemplate.update(sql, userId);
+
+        sql = "DELETE FROM reviews " +
+                "WHERE user_id =?";
+        jdbcTemplate.update(sql, userId);
+
+        sql = "DELETE FROM user_feed " +
+                "WHERE user_id =?";
+        jdbcTemplate.update(sql, userId);
+
+
         sql = "DELETE FROM Users " +
                 "WHERE user_id =?";
         jdbcTemplate.update(sql, userId);
+
+
     }
 }
