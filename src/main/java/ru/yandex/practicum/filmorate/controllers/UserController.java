@@ -45,6 +45,12 @@ public class UserController {
         return userService.update(user);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) throws RuntimeException {
+        log.debug("Входящий запрос на удаление пользователя с id = {}", id);
+        userService.deleteUserById(id);
+    }
+
     @PutMapping("/{id}/friends/{friendId}")
     public User addFriend(@PathVariable Long id, @PathVariable Long friendId) throws RuntimeException {
         log.debug("Входящий запрос на добавление в друзья пользователя с id = {} пользователю c id = {}",

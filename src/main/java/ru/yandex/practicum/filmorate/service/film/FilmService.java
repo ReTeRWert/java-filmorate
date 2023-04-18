@@ -1,8 +1,9 @@
 package ru.yandex.practicum.filmorate.service.film;
 
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.FeedEventType;
@@ -19,12 +20,22 @@ import java.util.List;
 @Data
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final FeedStorage feedStorage;
     private final DirectorStorage directorStorage;
+
+    @Autowired
+    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
+                       @Qualifier("userDbStorage") UserStorage userStorage,
+                       @Qualifier("feedDbStorage") FeedStorage feedStorage,
+                       @Qualifier("directorDbStorage") DirectorStorage directorStorage) {
+        this.filmStorage = filmStorage;
+        this.userStorage = userStorage;
+        this.feedStorage = feedStorage;
+        this.directorStorage = directorStorage;
+    }
 
     public List<Film> getFilms() {
         return filmStorage.getFilms();
@@ -46,7 +57,6 @@ public class FilmService {
         filmStorage.deleteFilmById(filmId);
     }
 
-
     public List<Film> getPopular(int count, Integer genreId, Integer year) {
         return filmStorage.getPopular(count, genreId, year);
     }
@@ -57,7 +67,12 @@ public class FilmService {
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() + 1);
         userStorage.findUserById(userId).getFilmsLike().add(filmId);
-        feedStorage.addFeed(Feed.builder().operation(FeedOperation.ADD).eventType(FeedEventType.LIKE).entityId(filmId).userId(userId).build());
+        feedStorage.addFeed(Feed.builder()
+                .operation(FeedOperation.ADD)
+                .eventType(FeedEventType.LIKE)
+                .entityId(filmId)
+                .userId(userId)
+                .build());
     }
 
     public void removeFilmLike(long filmId, long userId) {
@@ -65,8 +80,12 @@ public class FilmService {
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() - 1);
         userStorage.findUserById(userId).getFilmsLike().remove(filmId);
-
-        feedStorage.addFeed(Feed.builder().operation(FeedOperation.REMOVE).eventType(FeedEventType.LIKE).entityId(filmId).userId(userId).build());
+        feedStorage.addFeed(Feed.builder()
+                .operation(FeedOperation.REMOVE)
+                .eventType(FeedEventType.LIKE)
+                .entityId(filmId)
+                .userId(userId)
+                .build());
     }
 
     public List<Film> getDirectorFilms(Long directorId, String sortBy) {
@@ -83,6 +102,7 @@ public class FilmService {
     }
 
     public List<Film> getCommonFilms(Long userId, Long friendId) {
+
         return filmStorage.getCommonFilms(userId, friendId);
     }
 

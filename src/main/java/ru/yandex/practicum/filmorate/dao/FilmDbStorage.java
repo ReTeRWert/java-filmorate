@@ -199,7 +199,20 @@ public class FilmDbStorage implements FilmStorage {
     }
 
     public void deleteFilmById(long filmId) {
-        String sql = "DELETE FROM Film WHERE film_id =?";
+
+        String sql = "DELETE FROM FilmGenre WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
+
+        sql = "DELETE FROM director_films WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
+
+        sql = "DELETE FROM reviews WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
+
+        sql = "DELETE FROM Film_like WHERE film_id =?";
+        jdbcTemplate.update(sql, filmId);
+
+        sql = "DELETE FROM Film WHERE film_id =?";
         jdbcTemplate.update(sql, filmId);
     }
 
@@ -265,7 +278,7 @@ public class FilmDbStorage implements FilmStorage {
                 "FROM FILM f " +
                 "LEFT JOIN FilmGenre fg on f.film_id = fg.film_id " +
                 "LEFT JOIN Film_like l on f.film_id = l.film_id {} GROUP BY f.film_id " +
-                "ORDER BY COUNT DESC " +
+                "ORDER BY rate DESC " +
                 "LIMIT ?";
         if (genreId == null && year == null) {
             return jdbcTemplate.query(sq.replace("{}", ""),

@@ -28,7 +28,6 @@ public class FeedDbStorageTest {
     void init() {
         User tempUser = User.builder().login("Mike").email("mike@mail.ru").birthday(LocalDate.of(2000, 12, 27)).build();
         user = userStorage.create(tempUser);
-
     }
 
     @Test
