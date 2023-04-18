@@ -33,8 +33,8 @@ class MostPopularsTest {
             .description("Создан первый искусственный покемон")
             .releaseDate(LocalDate.of(1998, 7, 18))
             .duration(75L)
-            .mpa(MPA.builder().id(1).build())
-            .genres(Arrays.asList(new Genre(3, "Мультфильм")))
+            .mpa(MPA.builder().id(1L).build())
+            .genres(Arrays.asList(new Genre(3L, "Мультфильм")))
             .rate(2)
             .build();
 
@@ -43,8 +43,8 @@ class MostPopularsTest {
             .description("Древние предсказания сбываются, когда покемоны Артикуно, Запдос и Молтрес")
             .releaseDate(LocalDate.of(1999, 7, 17))
             .duration(84L)
-            .mpa(MPA.builder().id(1).build())
-            .genres(Arrays.asList(new Genre(3, "Мультфильм")))
+            .mpa(MPA.builder().id(1L).build())
+            .genres(Arrays.asList(new Genre(3L, "Мультфильм")))
             .rate(1)
             .build();
 
@@ -53,8 +53,8 @@ class MostPopularsTest {
             .description("На Гринфилд наложено заклятие, и теперь Эш, Пикачу и их друзья должны найти способ восстановить некогда прекрасный город")
             .releaseDate(LocalDate.of(2000, 7, 17))
             .duration(93L)
-            .mpa(MPA.builder().id(1).build())
-            .genres(Arrays.asList(new Genre(3, "Мультфильм")))
+            .mpa(MPA.builder().id(1L).build())
+            .genres(Arrays.asList(new Genre(3L, "Мультфильм")))
             .rate(3)
             .build();
 
@@ -64,8 +64,8 @@ class MostPopularsTest {
                     "под названием «Оружие X», Уилсон приобрёл невероятную силу, проворство и способность к исцелению. ")
             .releaseDate(LocalDate.of(2016, 02, 11))
             .duration(108L)
-            .mpa(MPA.builder().id(4).build())
-            .genres(Arrays.asList(new Genre(6, "Боевик")))
+            .mpa(MPA.builder().id(4L).build())
+            .genres(Arrays.asList(new Genre(6L, "Боевик")))
             .rate(6)
             .build();
 
