@@ -57,26 +57,9 @@ public class FilmService {
     }
 
     public List<Film> getPopular(int count, Integer genreId, Integer year) {
-        return filmStorage.getFilms().stream()
-                .filter(f -> filterPopular(f, genreId, year))
-                .sorted(Comparator.comparingInt(Film::getRate).reversed())
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.getPopular(count, genreId,year);
     }
 
-    private boolean filterPopular(Film f, Integer genreId, Integer year) {
-        if (genreId != null) {
-            if (year != null) {
-                return f.getGenres().stream()
-                        .filter(Genre -> Genre.getId() == genreId).count() == 1 && f.getReleaseDate().getYear() == year;
-            } else return f.getGenres().stream()
-                    .filter(Genre -> Genre.getId() == genreId).count() == 1;
-        } else if (year != null) {
-            return f.getReleaseDate().getYear() == year;
-        } else {
-            return true;
-        }
-    }
 
 
     public void addFilmLike(long filmId, long userId) {
