@@ -89,7 +89,6 @@ class MostPopularsTest {
 
     @Test
     public void topByYear() {
-
         List<Film> list = filmDbStorage.getPopular(10, null, 2000);
         assertEquals(1, filmDbStorage.getPopular(10, null, 2000).size());
         assertEquals(filmDbStorage.findFilmById(film3.getId()), list.get(0));
