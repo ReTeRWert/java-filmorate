@@ -1,9 +1,9 @@
-INSERT INTO Genre (name) VALUES ('ЉомедиЯ');
-INSERT INTO Genre (name) VALUES ('„рама');
-INSERT INTO Genre (name) VALUES ('Њультфильм');
-INSERT INTO Genre (name) VALUES ('’риллер');
-INSERT INTO Genre (name) VALUES ('„окументальный');
-INSERT INTO Genre (name) VALUES ('Ѓоевик');
+INSERT INTO Genre (name) VALUES ('РљРѕРјРµРґРёСЏ');
+INSERT INTO Genre (name) VALUES ('Р”СЂР°РјР°');
+INSERT INTO Genre (name) VALUES ('РњСѓР»СЊС‚С„РёР»СЊРј');
+INSERT INTO Genre (name) VALUES ('РўСЂРёР»Р»РµСЂ');
+INSERT INTO Genre (name) VALUES ('Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅС‹Р№');
+INSERT INTO Genre (name) VALUES ('Р‘РѕРµРІРёРє');
 
 INSERT INTO Age_rating (name) VALUES ('G');
 INSERT INTO Age_rating (name) VALUES ('PG');
