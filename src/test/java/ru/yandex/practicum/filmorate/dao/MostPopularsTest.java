@@ -81,9 +81,9 @@ class MostPopularsTest {
     public void topByGenre() {
         List<Film> list = filmDbStorage.getPopular(10, 3, null);
         assertEquals(3, filmDbStorage.getPopular(10, 3, null).size());
-        assertEquals(filmDbStorage.findFilmById(film3.getId()), list.get(0));
-        assertEquals(filmDbStorage.findFilmById(film1.getId()), list.get(1));
-        assertEquals(filmDbStorage.findFilmById(film2.getId()), list.get(2));
+        assertEquals(filmDbStorage.findFilmById(film1.getId()), list.get(0));
+        assertEquals(filmDbStorage.findFilmById(film2.getId()), list.get(1));
+        assertEquals(filmDbStorage.findFilmById(film3.getId()), list.get(2));
 
     }
 
@@ -98,10 +98,10 @@ class MostPopularsTest {
     public void topAll() {
         List<Film> list = filmDbStorage.getPopular(10, null, null);
         assertEquals(4, filmDbStorage.getPopular(10, null, null).size());
-        assertEquals(filmDbStorage.findFilmById(film4.getId()), list.get(0));
-        assertEquals(filmDbStorage.findFilmById(film3.getId()), list.get(1));
-        assertEquals(filmDbStorage.findFilmById(film1.getId()), list.get(2));
-        assertEquals(filmDbStorage.findFilmById(film2.getId()), list.get(3));
+        assertEquals(filmDbStorage.findFilmById(film1.getId()), list.get(0));
+        assertEquals(filmDbStorage.findFilmById(film2.getId()), list.get(1));
+        assertEquals(filmDbStorage.findFilmById(film3.getId()), list.get(2));
+        assertEquals(filmDbStorage.findFilmById(film4.getId()), list.get(3));
     }
 
 }
