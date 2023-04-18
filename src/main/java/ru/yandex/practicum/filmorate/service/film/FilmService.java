@@ -1,10 +1,10 @@
 package ru.yandex.practicum.filmorate.service.film;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.FeedEventType;
 import ru.yandex.practicum.filmorate.model.FeedOperation;
@@ -20,22 +20,12 @@ import java.util.List;
 @Data
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
     private final FeedStorage feedStorage;
     private final DirectorStorage directorStorage;
-
-    @Autowired
-    public FilmService(@Qualifier("filmDbStorage") FilmStorage filmStorage,
-                       @Qualifier("userDbStorage") UserStorage userStorage,
-                       @Qualifier("feedDbStorage") FeedStorage feedStorage,
-                       @Qualifier("directorDbStorage") DirectorStorage directorStorage) {
-        this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
-        this.feedStorage = feedStorage;
-        this.directorStorage = directorStorage;
-    }
 
     public List<Film> getFilms() {
         return filmStorage.getFilms();
@@ -50,7 +40,13 @@ public class FilmService {
     }
 
     public Film findFilmById(long id) {
-        return filmStorage.findFilmById(id);
+        Film receivedFilm = filmStorage.findFilmById(id);
+        if (receivedFilm != null) {
+            return receivedFilm;
+        } else {
+            log.warn("Ошибка получения фильма. Фильм с ID " + id + " не найден");
+            throw new NotFoundException("Фильм с Id " + id + " не найден");
+        }
     }
 
     public void deleteFilmById(long filmId) {
@@ -102,7 +98,6 @@ public class FilmService {
     }
 
     public List<Film> getCommonFilms(Long userId, Long friendId) {
-
         return filmStorage.getCommonFilms(userId, friendId);
     }
 

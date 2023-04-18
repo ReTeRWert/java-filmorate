@@ -39,7 +39,7 @@ public class SearchFilmsTest {
                 .description("Description")
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .duration(120L)
-                .mpa(MPA.builder().id(3).build())
+                .mpa(MPA.builder().id(3L).build())
                 .build();
         film1.setDirectors(List.of(directorDbStorage.getDirector(1L)));
         filmDbStorage.create(film1);
@@ -50,7 +50,7 @@ public class SearchFilmsTest {
                 .releaseDate(LocalDate.of(2003, 2, 7))
                 .duration(112L)
                 .mpa(MPA.builder()
-                        .id(2)
+                        .id(2L)
                         .build())
                 .build();
         filmDbStorage.create(film2);
@@ -64,7 +64,7 @@ public class SearchFilmsTest {
                 .releaseDate(LocalDate.of(2003, 2, 7))
                 .duration(112L)
                 .mpa(MPA.builder()
-                        .id(2)
+                        .id(2L)
                         .build())
                 .build();
         film3.setDirectors(List.of(directorDbStorage.getDirector(2L)));
@@ -77,7 +77,7 @@ public class SearchFilmsTest {
                 .description("A boy who learned program Java")
                 .releaseDate(LocalDate.of(2020, 1, 27))
                 .duration(120L)
-                .mpa(MPA.builder().id(3).build())
+                .mpa(MPA.builder().id(3L).build())
                 .build();
         film4.setDirectors(List.of(directorDbStorage.getDirector(3L)));
         filmDbStorage.create(film4);
