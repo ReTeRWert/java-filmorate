@@ -143,15 +143,26 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void addFilmsLike(long filmId, long userId) {
-        String sql = "INSERT " +
-                "INTO Film_like (user_id, film_id) " +
-                "VALUES (?, ?)";
-        jdbcTemplate.update(sql, userId, filmId);
 
-        String sqlRate = "UPDATE Film " +
-                "SET rate=? " +
-                "WHERE film_id=?";
-        jdbcTemplate.update(sqlRate, +1, userId);
+        String sql = "INSERT INTO Film_like (user_id, film_id) " +
+                "SELECT ?, ? " +
+                "WHERE NOT EXISTS ( " +
+                "SELECT 1  " +
+                "FROM Film_like " +
+                "WHERE user_id =? AND film_id = ?)";
+        jdbcTemplate.update(sql, userId, filmId, userId, filmId);
+
+        String sqlCheck = "SELECT 1 " +
+                "FROM Film_like " +
+                "WHERE user_id =? AND film_id = ?";
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sqlCheck, userId, filmId);
+        if (!sqlRowSet.next()) {
+            String sqlRate = "UPDATE Film " +
+                    "SET rate=? " +
+                    "WHERE film_id= ?";
+            jdbcTemplate.update(sqlRate, +1, userId);
+        }
+
     }
 
     @Override

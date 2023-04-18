@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.FeedEventType;
 import ru.yandex.practicum.filmorate.model.FeedOperation;
@@ -39,7 +40,13 @@ public class FilmService {
     }
 
     public Film findFilmById(long id) {
-        return filmStorage.findFilmById(id);
+        Film receivedFilm = filmStorage.findFilmById(id);
+        if (receivedFilm != null) {
+            return receivedFilm;
+        } else {
+            log.warn("Ошибка получения фильма. Фильм с ID " + id + " не найден");
+            throw new NotFoundException("Фильм с Id " + id + " не найден");
+        }
     }
 
     public void deleteFilmById(long filmId) {
@@ -65,7 +72,6 @@ public class FilmService {
         Film film = filmStorage.findFilmById(filmId);
         film.setRate(film.getRate() - 1);
         userStorage.findUserById(userId).getFilmsLike().remove(filmId);
-
         feedStorage.addFeed(Feed.builder().operation(FeedOperation.REMOVE).eventType(FeedEventType.LIKE).entityId(filmId).userId(userId).build());
     }
 

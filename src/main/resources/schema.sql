@@ -53,8 +53,6 @@ CREATE TABLE IF NOT EXISTS Film (
   duration BIGINT,
   rate INT,
   age_id INT,
-  director_id int,
-  FOREIGN KEY(director_id) REFERENCES directors(director_id),
   FOREIGN KEY(age_id) REFERENCES Age_rating(age_id)
 );
 

@@ -131,7 +131,7 @@ class FilmorateApplicationTests {
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .duration(120L)
                 .mpa(MPA.builder()
-                        .id(3)
+                        .id(3L)
                         .build())
                 .directors(new ArrayList<>())
                 .build();
@@ -143,7 +143,7 @@ class FilmorateApplicationTests {
                 .duration(120L)
                 .genres(new ArrayList<>())
                 .mpa(MPA.builder()
-                        .id(3)
+                        .id(3L)
                         .name("PG-13")
                         .build())
                 .directors(new ArrayList<>())
@@ -161,7 +161,7 @@ class FilmorateApplicationTests {
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .duration(120L)
                 .mpa(MPA.builder()
-                        .id(3)
+                        .id(3L)
                         .build())
                 .build();
         filmDbStorage.create(film);
@@ -173,7 +173,7 @@ class FilmorateApplicationTests {
                 .releaseDate(LocalDate.of(2003, 5, 12))
                 .duration(118L)
                 .mpa(MPA.builder()
-                        .id(1)
+                        .id(1L)
                         .build())
                 .directors(new ArrayList<>())
                 .build());
@@ -185,7 +185,7 @@ class FilmorateApplicationTests {
                 .duration(118L)
                 .genres(new ArrayList<>())
                 .mpa(MPA.builder()
-                        .id(1)
+                        .id(1L)
                         .name("G")
                         .build())
                 .directors(new ArrayList<>())
@@ -200,7 +200,7 @@ class FilmorateApplicationTests {
                 .description("Description")
                 .releaseDate(LocalDate.of(1995, 12, 27))
                 .duration(120L)
-                .mpa(MPA.builder().id(3).build())
+                .mpa(MPA.builder().id(3L).build())
                 .build();
         filmDbStorage.create(film1);
 
@@ -210,7 +210,7 @@ class FilmorateApplicationTests {
                 .releaseDate(LocalDate.of(2003, 2, 7))
                 .duration(112L)
                 .mpa(MPA.builder()
-                        .id(2)
+                        .id(2L)
                         .build())
                 .build();
         filmDbStorage.create(film2);
@@ -224,7 +224,7 @@ class FilmorateApplicationTests {
                 .duration(120L)
                 .genres(new ArrayList<>())
                 .mpa(MPA.builder()
-                        .id(3)
+                        .id(3L)
                         .name("PG-13")
                         .build())
                 .directors(new ArrayList<>())
@@ -238,7 +238,7 @@ class FilmorateApplicationTests {
                 .duration(112L)
                 .genres(new ArrayList<>())
                 .mpa(MPA.builder()
-                        .id(2)
+                        .id(2L)
                         .name("PG")
                         .build())
                 .directors(new ArrayList<>())
