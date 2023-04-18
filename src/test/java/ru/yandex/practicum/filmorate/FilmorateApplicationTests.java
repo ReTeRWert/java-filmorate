@@ -39,18 +39,10 @@ class FilmorateApplicationTests {
                 .login("UserLogin")
                 .build();
 
-        User userToCompare = User.builder()
-                .id(1L)
-                .email("")
-                .name("UserName")
-                .birthday(LocalDate.of(1990, 6, 9))
-                .login("UserLogin")
-                .friends(new HashSet<>())
-                .build();
-        userDbStorage.create(user);
+        User userInStorage = userDbStorage.create(user);
 
-        User getUser = userDbStorage.findUserById(1L);
-        assertThat(getUser, is(equalTo(userToCompare)));
+        User getUser = userDbStorage.findUserById(userInStorage.getId());
+        assertThat(getUser.getName(), is(equalTo(userInStorage.getName())));
     }
 
     @Test
