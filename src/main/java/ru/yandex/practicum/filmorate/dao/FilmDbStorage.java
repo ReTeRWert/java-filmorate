@@ -301,32 +301,26 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getPopular(Integer limit, Integer genreId, Integer year) {
-        String sq = "SELECT f.*, m.AGE_ID, m.NAME AS AGE_NAME, fg.GENRE_ID, g.NAME AS GENRE_NAME, df.DIRECTOR_ID, d.NAME AS DIRECTOR_NAME " +
-                "FROM ( SELECT COUNT(USER_ID) AS LIKE_USER_COUNT, f.* " +
-                "FROM FILM_LIKE fl " +
-                "RIGHT JOIN FILM f ON f.FILM_ID = fl.FILM_ID " +
-                "GROUP BY f.FILM_ID " +
-                "ORDER BY LIKE_USER_COUNT DESC " +
-                "LIMIT ?) AS f " +
-                "LEFT JOIN FILMGENRE fg ON f.FILM_ID = fg.FILM_ID " +
-                "LEFT JOIN GENRE g ON fg.GENRE_ID = g.GENRE_ID " +
-                "LEFT JOIN FILM_LIKE fl ON f.FILM_ID = fl.FILM_ID " +
-                "LEFT JOIN AGE_RATING m ON f.AGE_ID = m.AGE_ID " +
-                "LEFT JOIN DIRECTOR_FILMS df ON df.FILM_ID = f.FILM_ID " +
-                "LEFT JOIN DIRECTORS d ON d.DIRECTOR_ID = df.DIRECTOR_ID {}";
+        String sq = "SELECT f.film_id, f.name, f.description, f.release_date, f.duration, f.rate,age_id, " +
+                "COUNT(l.user_id) AS COUNT " +
+                "FROM FILM f " +
+                "LEFT JOIN FilmGenre fg on f.film_id = fg.film_id " +
+                "LEFT JOIN Film_like l on f.film_id = l.film_id {} GROUP BY f.film_id " +
+                "ORDER BY COUNT DESC " +
+                "LIMIT ?";
         if (genreId == null && year == null) {
             return jdbcTemplate.query(sq.replace("{}", ""),
-                    filmExtractor, limit);
+                    this::mapRowToFilm, limit);
         } else if (genreId == null) {
-            return jdbcTemplate.query(sq.replace("{}", "WHERE EXTRACT(YEAR FROM f.release_date) = ?"),
-                    filmExtractor, limit, year);
+            return jdbcTemplate.query(sq.replace("{}", "WHERE EXTRACT(YEAR FROM release_date) = ?"),
+                    this::mapRowToFilm, year, limit);
         } else if (year == null) {
-            return jdbcTemplate.query(sq.replace("{}", "WHERE fg.genre_id = ?"),
-                    filmExtractor, limit, genreId);
+            return jdbcTemplate.query(sq.replace("{}", "WHERE genre_id = ?"),
+                    this::mapRowToFilm, genreId, limit);
         } else {
-            return jdbcTemplate.query(sq.replace("{}", "WHERE fg.genre_id = ? " +
-                            "AND EXTRACT(YEAR FROM f.release_date) = ? "),
-                    filmExtractor, limit, genreId, year);
+            return jdbcTemplate.query(sq.replace("{}", "WHERE genre_id = ? " +
+                            "AND EXTRACT(YEAR FROM release_date) = ? "),
+                    this::mapRowToFilm, genreId, year, limit);
         }
     }
 
